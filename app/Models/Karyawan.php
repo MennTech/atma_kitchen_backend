@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticable;
 use Illuminate\Database\Eloquent\Model;
 
-class Karyawan extends Model
+class Karyawan extends Authenticable
 {
     use HasFactory;
 
@@ -20,6 +21,19 @@ class Karyawan extends Model
         'status',
         'bonus'
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
     public function role()
     {
