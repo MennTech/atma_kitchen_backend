@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Limit_Produk extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
     protected $table = 'limit_produks';
     protected $primaryKey = 'id_limit_produk';
     protected $fillable = [
