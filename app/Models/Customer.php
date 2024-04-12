@@ -16,7 +16,7 @@ class Customer extends Authenticatable
      *
      * @var array<int, string>
      */
-
+    public $timestamps = false;
     protected $table = 'customers';
     protected $primaryKey = 'id_customer';
     protected $fillable = [
