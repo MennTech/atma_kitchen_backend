@@ -25,6 +25,7 @@ class Customer extends Authenticatable
         'email_customer',
         'password',
         'tanggal_lahir',
+        'no_telp',
         'poin',
         'saldo',
     ];
