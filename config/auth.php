@@ -41,14 +41,12 @@ return [
             'provider' => 'users',
         ],
         'api_customer' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'users',
-            'hash' => false,
         ],
         'api_karyawan' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'karyawans',
-            'hash' => false,
         ],
     ],
 
