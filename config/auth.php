@@ -40,6 +40,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api_customer' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+        'api_karyawan' => [
+            'driver' => 'sanctum',
+            'provider' => 'karyawans',
+            'hash' => false,
+        ],
     ],
 
     /*
@@ -64,6 +74,11 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\Customer::class),
         ],
+
+        'karyawans' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Karyawan::class),
+        ]
 
         // 'users' => [
         //     'driver' => 'database',
@@ -93,6 +108,12 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'karyawans' => [
+            'provider' => 'karyawans',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,
