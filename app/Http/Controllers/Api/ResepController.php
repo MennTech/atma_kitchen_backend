@@ -14,7 +14,7 @@ class ResepController extends Controller
         if($resep->isEmpty()){
             return response([
                 'message' => 'data empty',
-                'data' => null
+                'data' => null 
             ],404);
         }
         return response([
@@ -23,7 +23,7 @@ class ResepController extends Controller
         ],200);
     }
 
-    public function show(string $id)
+    public function showDetail(string $id)
     {
         $resep = Resep::find($id);
         if(!$resep){

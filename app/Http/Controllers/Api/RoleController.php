@@ -66,7 +66,6 @@ class RoleController extends Controller
         }
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
-            'jabatan' => 'required',
             'gaji' => 'required'
         ]);
         if($validator->fails()){
@@ -74,7 +73,6 @@ class RoleController extends Controller
                 'message' => $validator->errors()
             ],400);
         }
-        $role->jabatan = $updateData['jabatan'];
         $role->gaji = $updateData['gaji'];
         $role->save();
         return response([

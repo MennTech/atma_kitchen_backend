@@ -55,4 +55,8 @@ class DetailResepController extends Controller
             'data' => $detail_resep
         ],200);
     }
+
+    public function update(string $id_resep, string $id_bahan_baku, Request $request){
+        
+    }
 }

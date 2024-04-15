@@ -38,13 +38,10 @@ class KaryawanController extends Controller
 
     public function store(Request $request){
         $storeData = $request->all();
-
         $validator = Validator::make($storeData, [
             'id_role' => 'required',
             'nama_karyawan' => 'required',
             'no_telp' => 'required',
-            'email_karyawan' => 'required',
-            'password' => 'required',
             'status' => 'required',
             'bonus' => 'required'
         ]);
@@ -52,6 +49,10 @@ class KaryawanController extends Controller
             return response([
                 'message' => $validator->errors()
             ],400);
+        }
+        if($request->has('email_karyawan') && $request->has('password')){
+            $storeData['email_karyawan'] = $request->email_karyawan;
+            $storeData['password'] = $request->password;
         }
         $karyawan = Karyawan::create($storeData);
         return response([
@@ -89,6 +90,31 @@ class KaryawanController extends Controller
         $karyawan->email_karyawan = $updateData['email_karyawan'];
         $karyawan->password = $updateData['password'];
         $karyawan->status = $updateData['status'];
+        $karyawan->bonus = $updateData['bonus'];
+        $karyawan->save();
+        return response([
+            'message' => 'karyawan updated',
+            'data' => $karyawan
+        ],200);
+    }   
+
+    public function updateBonus(Request $request, string $id){
+        $karyawan = Karyawan::find($id);
+        if(!$karyawan){
+            return response([
+                'message' => 'karyawan not found',
+                'data' => null
+            ],404);
+        }
+        $updateData = $request->all();
+        $validator = Validator::make($updateData, [
+            'bonus' => 'required'
+        ]);
+        if($validator->fails()){
+            return response([
+                'message' => $validator->errors()
+            ],400);
+        }
         $karyawan->bonus = $updateData['bonus'];
         $karyawan->save();
         return response([

@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ResepController;
 use App\Http\Controllers\Api\DetailResepController;
+use App\Http\Controllers\Api\KaryawanController;
+use App\Http\Controllers\Api\RoleController;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {
@@ -16,8 +18,7 @@ Route::get('/user', function (Request $request) {
 |--------------------------------------------------------------------------|
 */
 Route::get('/resep',[ResepController::class, 'index']);
-// Route::get('/resep/{id}',[ResepController::class, 'show']);
-Route::get('/resep/{id}',[ResepController::class, 'show']);
+Route::get('/resep/{id}',[ResepController::class, 'showDetail']);
 Route::post('/resep',[ResepController::class, 'store']);
 Route::put('/resep/{id}',[ResepController::class, 'update']);
 Route::delete('/resep/{id}',[ResepController::class, 'destroy']);
@@ -36,7 +37,8 @@ Route::post('/detail-resep/{id}',[DetailResepController::class, 'store']);
 |--------------------------------Owner-------------------------------------|
 |--------------------------------------------------------------------------|
 */
-
+Route::post('/role/{id}', [RoleController::class, 'update']);
+Route::post('/karyawan/{id}/bonus',[KaryawanController::class, 'updateBonus']);
 /*
 |--------------------------------------------------------------------------|
 |-------------------------------Customer-----------------------------------|
