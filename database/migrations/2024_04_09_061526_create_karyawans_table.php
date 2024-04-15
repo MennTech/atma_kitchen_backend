@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_karyawan')->autoIncrement();
             $table->foreignId('id_role')->constrained('roles', 'id_role');
             $table->string('nama_karyawan');
-            $table->string('no_telp', 15);
+            $table->string('no_telp', 13);
             $table->string('email_karyawan')->unique()->nullable();
             $table->string('password')->nullable();
             $table->string('status');
