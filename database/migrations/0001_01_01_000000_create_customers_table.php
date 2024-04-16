@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email_customer')->unique();
             $table->string('password');
             $table->date('tanggal_lahir');
+            $table->string('no_telp', 13);
             $table->integer('poin');
             $table->double('saldo');
         });
