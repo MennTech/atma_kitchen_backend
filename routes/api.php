@@ -13,12 +13,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 /*
 |--------------------------------------------------------------------------|
-|----------------------------Public Route----------------------------------|
-|--------------------------------------------------------------------------|
-*/
-Route::post('/login', [AuthCustomerController::class, 'login']);
-/*
-|--------------------------------------------------------------------------|
 |----------------------------Karyawan Route--------------------------------|
 |--------------------------------------------------------------------------|
 */
@@ -60,6 +54,9 @@ Route::post('/detail-resep/{id}',[DetailResepController::class, 'store']);
 |-------------------------------Customer-----------------------------------|
 |--------------------------------------------------------------------------|
 */
-Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/logout', [AuthCustomerController::class, 'logout']);
+Route::prefix('/customer')->group(function (){
+    Route::post('/login', [AuthCustomerController::class, 'login']);
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::post('/logout', [AuthCustomerController::class, 'logout']);
+    });
 });
