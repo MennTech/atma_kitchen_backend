@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\AuthCustomerController;
+use App\Http\Controllers\Api\AuthKaryawanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ResepController;
@@ -11,7 +13,17 @@ use Illuminate\Support\Facades\App;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-
+/*
+|--------------------------------------------------------------------------|
+|----------------------------Karyawan Route--------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::prefix('/karyawan')->group(function() {
+    Route::post('/login', [AuthKaryawanController::class, 'login']);
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::post('/logout', [AuthKaryawanController::class, 'logout']);
+    });
+});
 /*
 |--------------------------------------------------------------------------|
 |----------------------------Administrator---------------------------------|
@@ -44,3 +56,9 @@ Route::post('/karyawan/{id}/bonus',[KaryawanController::class, 'updateBonus']);
 |-------------------------------Customer-----------------------------------|
 |--------------------------------------------------------------------------|
 */
+Route::prefix('/customer')->group(function (){
+    Route::post('/login', [AuthCustomerController::class, 'login']);
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::post('/logout', [AuthCustomerController::class, 'logout']);
+    });
+});
