@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DetailResepController;
 use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\PresensiController;
 use Illuminate\Support\Facades\App;
 
 /*
@@ -48,6 +49,8 @@ Route::get('/karyawan/{id}',[KaryawanController::class, 'show']);
 Route::post('/karyawan',[KaryawanController::class, 'store']);
 Route::put('/karyawan/{id}',[KaryawanController::class, 'update']);
 Route::delete('/karyawan/{id}',[KaryawanController::class, 'destroy']);
+
+Route::get('/tambah-presensi', [PresensiController::class, 'generatePresensi']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------------Owner-------------------------------------|
