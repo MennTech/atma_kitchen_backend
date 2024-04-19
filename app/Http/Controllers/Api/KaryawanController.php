@@ -41,15 +41,15 @@ class KaryawanController extends Controller
         $validator = Validator::make($storeData, [
             'id_role' => 'required',
             'nama_karyawan' => 'required',
-            'no_telp' => 'required',
-            'status' => 'required',
-            'bonus' => 'required'
+            'no_telp' => 'required|between:10,13',
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
+        $storeData['status'] = 'aktif';
+        $storeData['bonus'] = 0;
         if($request->has('email_karyawan') && $request->has('password')){
             $storeData['email_karyawan'] = $request->email_karyawan;
             $storeData['password'] = $request->password;
@@ -74,23 +74,25 @@ class KaryawanController extends Controller
             'id_role' => 'required',
             'nama_karyawan' => 'required',
             'no_telp' => 'required',
-            'email_karyawan' => 'required',
-            'password' => 'required',
             'status' => 'required',
-            'bonus' => 'required'
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
+
+        if($request->has('email_karyawan') && $request->has('password')){
+            $updateData['email_karyawan'] = $request->email_karyawan;
+            $updateData['password'] = $request->password;
+            $karyawan->email_karyawan = $updateData['email_karyawan'];
+            $karyawan->password = $updateData['password'];
+        }
+
         $karyawan->id_role = $updateData['id_role'];
         $karyawan->nama_karyawan = $updateData['nama_karyawan'];
         $karyawan->no_telp = $updateData['no_telp'];
-        $karyawan->email_karyawan = $updateData['email_karyawan'];
-        $karyawan->password = $updateData['password'];
         $karyawan->status = $updateData['status'];
-        $karyawan->bonus = $updateData['bonus'];
         $karyawan->save();
         return response([
             'message' => 'karyawan updated',
@@ -118,7 +120,7 @@ class KaryawanController extends Controller
         $karyawan->bonus = $updateData['bonus'];
         $karyawan->save();
         return response([
-            'message' => 'karyawan updated',
+            'message' => 'bonus karyawan updated',
             'data' => $karyawan
         ],200);
     }

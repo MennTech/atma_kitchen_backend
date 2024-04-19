@@ -55,8 +55,32 @@ class DetailResepController extends Controller
             'data' => $detail_resep
         ],200);
     }
-
+ 
     public function update(string $id_resep, string $id_bahan_baku, Request $request){
-        
+        $detail_resep = Detail_Resep::where('id_resep',$id_resep)->where('id_bahan_baku',$id_bahan_baku)->first();
+        $updateData = $request->all();
+        // return $detail_resep;
+        $validator = Validator::make($updateData, [
+            // 'id_bahan_baku' => 'required',
+            'jumlah_bahan' => 'required'
+        ]);
+        if($validator->fails()){
+            return response([
+                'message' => $validator->errors()
+            ],400);
+        }
+        if(!$detail_resep){
+            return response([
+                'message' => 'data not found',
+                'data' => null
+            ],404);
+        }
+        // $detail_resep->id_bahan_baku = $updateData['id_bahan_baku'];
+        $detail_resep->jumlah_bahan = $updateData['jumlah_bahan'];
+        $detail_resep->save();
+        return response([
+            'message' => 'success update data',
+            'data' => $detail_resep
+        ],200);
     }
 }

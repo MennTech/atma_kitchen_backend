@@ -5,9 +5,37 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Validator;
 
 class AuthCustomerController extends Controller
 {
+
+    public function register(Request $request){
+        $storeData = $request->all();
+        $validator= Validator::make($storeData, [
+            'nama_customer' => 'required',
+            'email_customer' => 'required|email|unique:customers,email_customer',
+            'password' => 'required',
+            'tanggal_lahir' => 'required|date',
+            'no_telp' => 'required|between:10,13'
+        ]);
+        
+        if($validator->fails()){
+            return response([
+                'message' => $validator->errors()
+            ],400);
+        }
+        $storeData['poin'] = 0;
+        $storeData['saldo'] = 0;
+        $storeData['password'] = bcrypt($storeData['password']);
+        $customer = Customer::create($storeData);
+        return response()->json([
+            'message' => 'Register Success',
+            'customer' => $customer,
+        ]);
+    }
+
     public function login (Request $request){
         $data = $request->validate([
             'email_customer' => 'required|email',

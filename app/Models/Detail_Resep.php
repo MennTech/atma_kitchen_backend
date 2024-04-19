@@ -9,6 +9,7 @@ class Detail_Resep extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    protected $primaryKey = null;
     protected $table = 'detail_reseps';
     protected $fillable = [
         'id_resep',
@@ -18,11 +19,11 @@ class Detail_Resep extends Model
 
     public function resep()
     {
-        return $this->belongsTo(Resep::class, 'id_resep');
+        return $this->belongsToMany(Resep::class, 'detail_reseps');
     }
 
     public function bahanBaku()
     {
-        return $this->belongsTo(Bahan_Baku::class, 'id_bahan_baku');
+        return $this->belongsToMany(Bahan_Baku::class, 'detail_reseps');
     }
 }

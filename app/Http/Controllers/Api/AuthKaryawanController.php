@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Karyawan;
+use Illuminate\Support\Facades\Validator;
 class AuthKaryawanController extends Controller
 {
     public function login(Request $request){
@@ -56,6 +57,24 @@ class AuthKaryawanController extends Controller
         $karyawan->tokens()->delete();
         return response()->json([
             'message' => 'Logout Success'
+        ]);
+    }
+
+    public function changePassword(Request $request){
+        $karyawan = Karyawan::where('id_karyawan', Auth::user()->id_karyawan)->first();
+
+        $storeData = $request->all();
+        $validate = Validator::make($storeData, [
+            'new_password' => 'required'
+        ]);
+        if($validate->fails())
+            return response(['message' => $validate->errors()], 400);
+
+        $karyawan->update([
+            'password' => bcrypt($storeData['new_password'])
+        ]);
+        return response()->json([
+            'message' => 'Password berhasil diubah'
         ]);
     }
 }
