@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ResepController;
 use App\Http\Controllers\Api\DetailResepController;
+use App\Http\Controllers\Api\PembelianBahanBakuController;
 use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\App;
 
@@ -82,4 +83,17 @@ Route::prefix('/produk')->group(function() {
 
     // produk 'delete'
     Route::patch('/delete/{id}', [ProdukController::class, 'delete']);
+});
+
+/*
+|--------------------------------------------------------------------------|
+|------------------------Pembelian Bahan Baku------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::prefix('/pembelian-bahan-baku')->group(function(){
+    Route::get('/', [PembelianBahanBakuController::class, 'index']);
+    Route::get('/cari', [PembelianBahanBakuController::class, 'show']);
+    Route::post('/', [PembelianBahanBakuController::class, 'store']);
+    Route::patch('/{id}', [PembelianBahanBakuController::class, 'update']);
+    Route::delete('/{id}', [PembelianBahanBakuController::class, 'destroy']);
 });
