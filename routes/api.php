@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ResepController;
 use App\Http\Controllers\Api\DetailResepController;
+use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {
@@ -13,7 +14,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 /*
 |--------------------------------------------------------------------------|
-|----------------------------Karyawan Route--------------------------------|
+|----------------------------Karyawan--------------------------------|
 |--------------------------------------------------------------------------|
 */
 Route::prefix('/karyawan')->group(function() {
@@ -39,7 +40,7 @@ Route::get('/detail-resep/{id}',[DetailResepController::class, 'showByIdResep'])
 Route::post('/detail-resep/{id}',[DetailResepController::class, 'store']);
 /*
 |--------------------------------------------------------------------------|
-|--------------------------Manager Operasional----------------------------|
+|--------------------------Manager Operasional-----------------------------|
 |--------------------------------------------------------------------------|
 */
 
@@ -59,4 +60,26 @@ Route::prefix('/customer')->group(function (){
     Route::middleware('auth:sanctum')->group(function(){
         Route::post('/logout', [AuthCustomerController::class, 'logout']);
     });
+});
+/*
+|--------------------------------------------------------------------------|
+|-------------------------------Produk-------------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::prefix('/produk')->group(function() {
+    Route::get('/', [ProdukController::class, 'index']);
+    Route::get('/atma_kitchen', [ProdukController::class, 'index_atma_kitchen']);
+    Route::get('/penitip', [ProdukController::class, 'index_penitip']);
+
+    // produk search endpoint customer, menggunakan query parameter '?keyword'
+    Route::get('/cari', [ProdukController::class, 'show']);
+    // produk search endpoint admin, menggunakan query parameter '?keyword'
+    Route::get('/admin/cari', [ProdukController::class, 'showAdmin']);
+
+    Route::post('/', [ProdukController::class, 'store']);
+    // produk update endpoint, perlu tambahan METHOD PUT pada header request jika menggunakan form-data
+    Route::post('/{id}', [ProdukController::class, 'update']); 
+
+    // produk 'delete'
+    Route::patch('/delete/{id}', [ProdukController::class, 'delete']);
 });
