@@ -164,9 +164,9 @@ class PembelianBahanBakuController extends Controller
         }
         // update stok bahan baku
         // !WARNING: bisa menyebabkan stok bahan baku negatif
-        // $stok_pembelian_lama = $pembelian_bahan_baku->jumlah;
-        // $bahan_baku = Bahan_Baku::find($pembelian_bahan_baku->id_bahan_baku);
-        // $bahan_baku->stok -= $stok_pembelian_lama;
+        $stok_pembelian_lama = $pembelian_bahan_baku->jumlah;
+        $bahan_baku = Bahan_Baku::find($pembelian_bahan_baku->id_bahan_baku);
+        $bahan_baku->stok -= $stok_pembelian_lama;
 
         $pembelian_bahan_baku->delete();
         return response()->json([

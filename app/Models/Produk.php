@@ -32,4 +32,9 @@ class Produk extends Model
     {
         return $this->belongsTo(Resep::class, 'id_resep');
     }
+
+    public function hampers()
+    {
+        return $this->belongsToMany(Hampers::class, 'detail_hampers', 'id_produk', 'id_hampers')->withPivot('id_bahan_baku');
+    }
 }

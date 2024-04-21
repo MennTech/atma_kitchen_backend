@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ResepController;
 use App\Http\Controllers\Api\DetailResepController;
+use App\Http\Controllers\Api\HampersController;
 use App\Http\Controllers\Api\PembelianBahanBakuController;
 use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\App;
@@ -94,6 +95,18 @@ Route::prefix('/pembelian-bahan-baku')->group(function(){
     Route::get('/', [PembelianBahanBakuController::class, 'index']);
     Route::get('/cari', [PembelianBahanBakuController::class, 'show']);
     Route::post('/', [PembelianBahanBakuController::class, 'store']);
-    Route::patch('/{id}', [PembelianBahanBakuController::class, 'update']);
+    Route::put('/{id}', [PembelianBahanBakuController::class, 'update']);
     Route::delete('/{id}', [PembelianBahanBakuController::class, 'destroy']);
+});
+/*
+|--------------------------------------------------------------------------|
+|---------------------------------Hampers----------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::prefix('/hampers')->group(function(){
+    Route::get('/', [HampersController::class, 'index']);
+    Route::get('/cari', [HampersController::class, 'show']);
+    Route::post('/', [HampersController::class, 'store']);
+    Route::put('/{id}', [HampersController::class, 'update']);
+    Route::delete('/{id}', [HampersController::class, 'destroy']);
 });

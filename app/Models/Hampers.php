@@ -10,9 +10,14 @@ class Hampers extends Model
     use HasFactory;
     public $timestamps = false;
     protected $table = 'hampers';
-    protected $primaryKey = 'id_hamper';
+    protected $primaryKey = 'id_hampers';
     protected $fillable = [
         'nama_hampers',
         'harga'
     ];
+
+    public function produk()
+    {
+        return $this->belongsToMany(Produk::class, 'detail_hampers', 'id_hampers', 'id_produk')->withPivot('id_bahan_baku');
+    }
 }
