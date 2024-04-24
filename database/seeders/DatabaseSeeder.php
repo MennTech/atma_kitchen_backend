@@ -23,19 +23,19 @@ class DatabaseSeeder extends Seeder
         $this->call([
             bahan_bakus::class,
             reseps::class,
-            detail_reseps::class,
             pembelian_bahan_bakus::class,
             penitips::class,
             produks::class,
             hamper::class,
             detail_hamper::class,
-            pesanans::class,
-            detail_pesanans::class,
             customers::class,
             roles::class,
             karyawans::class,
             presensis::class,
             pengeluaran_lains::class,
+            detail_reseps::class,
+            pesanans::class,
+            detail_pesanans::class,
         ]);
     }
 }

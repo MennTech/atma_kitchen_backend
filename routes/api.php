@@ -5,7 +5,6 @@ use App\Http\Controllers\Api\AuthKaryawanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ResepController;
-use App\Http\Controllers\Api\DetailResepController;
 use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\CustomerController;
@@ -33,12 +32,9 @@ Route::get('/resep',[ResepController::class, 'index']);
 Route::get('/resep/{id}',[ResepController::class, 'showDetail']);
 Route::post('/resep',[ResepController::class, 'store']);
 Route::put('/resep/{id}',[ResepController::class, 'update']);
-Route::delete('/resep/{id}',[ResepController::class, 'destroy']);
-
-Route::get('/detail-resep',[DetailResepController::class, 'index']);
-Route::get('/detail-resep/{id}',[DetailResepController::class, 'showByIdResep']);
-Route::post('/detail-resep/{id}',[DetailResepController::class, 'store']);
-Route::put('/detail-resep/{id}/{id2}',[DetailResepController::class, 'update']);
+Route::delete('/resep/{id}',[ResepController::class, 'destroyResep']);
+Route::delete('/resep/{id}/detail',[ResepController::class, 'destroyAllDetail']);
+Route::delete('/resep/{id}/{id2}',[ResepController::class, 'destroyDetail']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional----------------------------|
@@ -50,7 +46,8 @@ Route::post('/karyawan',[KaryawanController::class, 'store']);
 Route::put('/karyawan/{id}',[KaryawanController::class, 'update']);
 Route::delete('/karyawan/{id}',[KaryawanController::class, 'destroy']);
 
-Route::get('/tambah-presensi', [PresensiController::class, 'generatePresensi']);
+Route::get('/presensi', [PresensiController::class, 'generatePresensi']);
+Route::put('/presensi/{id}',[PresensiController::class, 'updatePresensi']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------------Owner-------------------------------------|
