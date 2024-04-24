@@ -203,6 +203,5 @@ class produks extends Seeder
             'status' => 'Tersedia',
             'stok_tersedia' => 10,
         ]);
-
     }
 }

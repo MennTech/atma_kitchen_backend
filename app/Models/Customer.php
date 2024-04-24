@@ -22,7 +22,7 @@ class Customer extends Authenticatable
     protected $primaryKey = 'id_customer';
     protected $fillable = [
         'nama_customer',
-        'email_customer',
+          'email_customer',
         'password',
         'tanggal_lahir',
         'no_telp',
