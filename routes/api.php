@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\ResepController;
 use App\Http\Controllers\Api\DetailResepController;
 use App\Http\Controllers\Api\HampersController;
 use App\Http\Controllers\Api\PembelianBahanBakuController;
-use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\Api\ProdukController;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {

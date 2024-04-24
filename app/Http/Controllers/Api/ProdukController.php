@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Penitip;
 use App\Models\Produk;
 use App\Models\Resep;
@@ -86,12 +87,6 @@ class ProdukController extends Controller
                 'error' => $validate->errors()
             ], 400);
         }
-        // Upload image
-        $uploadFolder = 'produk';
-        $gambar_produk = $request->file('gambar_produk');
-        $image_uploaded_path = $gambar_produk->store($uploadFolder, 'public');
-        $uploadedImageResponse = basename($image_uploaded_path);
-        $requestData['gambar_produk'] = $uploadedImageResponse;
 
         // jika produk yg ditambah adalah produk penitip
         if ($request->has('id_penitip') && $request->id_penitip != null) {
@@ -151,6 +146,12 @@ class ProdukController extends Controller
             ], 400);
         }
 
+        // Upload image
+        $uploadFolder = 'produk';
+        $gambar_produk = $request->file('gambar_produk');
+        $image_uploaded_path = $gambar_produk->store($uploadFolder, 'public');
+        $uploadedImageResponse = basename($image_uploaded_path);
+        $requestData['gambar_produk'] = $uploadedImageResponse;
         $requestData['status'] = 'Dijual';
 
         $produk = Produk::create($requestData);
@@ -200,19 +201,6 @@ class ProdukController extends Controller
                 'message' => 'Gagal mengupdate produk',
                 'error' => $validate->errors()
             ], 400);
-        }
-        // jika request memiliki file gambar_produk
-        if ($request->hasFile('gambar_produk')) {
-            $uploadFolder = 'produk';
-            $gambar_produk = $request->file('gambar_produk');
-            $image_uploaded_path = $gambar_produk->store($uploadFolder, 'public');
-            $uploadedImageResponse = basename($image_uploaded_path);
-
-            // hapus gambar lama
-            Storage::disk('public')->delete('produk/' . $produk->gambar_produk);
-
-            // update gambar
-            $requestData['gambar_produk'] = $uploadedImageResponse;
         }
 
         // jika produk yg diupdate adalah produk penitip
@@ -267,7 +255,19 @@ class ProdukController extends Controller
                 'error' => 'id_resep atau id_penitip harus diisi'
             ], 400);
         }
+        // jika request memiliki file gambar_produk
+        if ($request->hasFile('gambar_produk')) {
+            $uploadFolder = 'produk';
+            $gambar_produk = $request->file('gambar_produk');
+            $image_uploaded_path = $gambar_produk->store($uploadFolder, 'public');
+            $uploadedImageResponse = basename($image_uploaded_path);
 
+            // hapus gambar lama
+            Storage::disk('public')->delete('produk/' . $produk->gambar_produk);
+
+            // update gambar
+            $requestData['gambar_produk'] = $uploadedImageResponse;
+        }
         $produk->update($requestData);
         return response()->json([
             'success' => true,
