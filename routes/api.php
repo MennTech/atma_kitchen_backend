@@ -41,6 +41,12 @@ Route::put('/resep/{id}',[ResepController::class, 'update']);
 Route::delete('/resep/{id}',[ResepController::class, 'destroyResep']);
 Route::delete('/resep/{id}/detail',[ResepController::class, 'destroyAllDetail']);
 Route::delete('/resep/{id}/{id2}',[ResepController::class, 'destroyDetail']);
+
+Route::get('/bahan_baku',[BahanBakuController::class, 'index']);
+Route::get('/bahan_baku/{id}',[BahanBakuController::class, 'show']);
+Route::post('/input_bahan_baku',[BahanBakuController::class, 'store']);
+Route::put('/bahan_baku_update/{id}',[BahanBakuController::class, 'update']);
+Route::delete('/bahan_baku_deleted/{id}',[BahanBakuController::class, 'destroy']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional-----------------------------|
@@ -54,6 +60,18 @@ Route::delete('/karyawan/{id}',[KaryawanController::class, 'destroy']);
 
 Route::get('/presensi', [PresensiController::class, 'generatePresensi']);
 Route::put('/presensi/{id}',[PresensiController::class, 'updatePresensi']);
+
+Route::get('/penitip',[PenitipController::class, 'index']);
+Route::get('/penitip/{id}',[PenitipController::class, 'show']);
+Route::post('/input_penitip',[PenitipController::class, 'store']);
+Route::put('/penitip_update/{id}',[PenitipController::class, 'update']);
+Route::delete('/penitip_deleted/{id}',[PenitipController::class, 'destroy']);
+
+Route::get('/pengeluaran_lain',[PengeluaranLainController::class, 'index']);
+Route::get('/pengeluaran_lain/{id}',[PengeluaranLainController::class, 'show']);
+Route::post('/input_pengeluaran_lain',[PengeluaranLainController::class, 'store']);
+Route::put('/pengeluaran_lain_update/{id}',[PengeluaranLainController::class, 'update']);
+Route::delete('/pengeluaran_lain_deleted/{id}',[PengeluaranLainController::class, 'destroy']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------------Owner-------------------------------------|
@@ -75,6 +93,9 @@ Route::prefix('/customer')->group(function (){
         Route::get('/history', [CustomerController::class, 'orderHistory']);
     });
 });
+
+Route::post('/register', [AuthCustomerController::class, 'register']);
+
 /*
 |--------------------------------------------------------------------------|
 |-------------------------------Produk-------------------------------------|
@@ -122,26 +143,3 @@ Route::prefix('/hampers')->group(function(){
     Route::put('/{id}', [HampersController::class, 'update']);
     Route::delete('/{id}', [HampersController::class, 'destroy']);
 });
-
-Route::get('/bahan_baku',[BahanBakuController::class, 'index']);
-// Route::get('/resep/{id}',[ResepController::class, 'show']);
-Route::get('/bahan_baku/{id}',[BahanBakuController::class, 'show']);
-Route::post('/input_bahan_baku',[BahanBakuController::class, 'store']);
-Route::put('/bahan_baku_update/{id}',[BahanBakuController::class, 'update']);
-Route::delete('/bahan_baku_deleted/{id}',[BahanBakuController::class, 'destroy']);
-
-Route::get('/penitip',[PenitipController::class, 'index']);
-// Route::get('/resep/{id}',[ResepController::class, 'show']);
-Route::get('/penitip/{id}',[PenitipController::class, 'show']);
-Route::post('/input_penitip',[PenitipController::class, 'store']);
-Route::put('/penitip_update/{id}',[PenitipController::class, 'update']);
-Route::delete('/penitip_deleted/{id}',[PenitipController::class, 'destroy']);
-
-Route::get('/pengeluaran_lain',[PengeluaranLainController::class, 'index']);
-// Route::get('/resep/{id}',[ResepController::class, 'show']);
-Route::get('/pengeluaran_lain/{id}',[PengeluaranLainController::class, 'show']);
-Route::post('/input_pengeluaran_lain',[PengeluaranLainController::class, 'store']);
-Route::put('/pengeluaran_lain_update/{id}',[PengeluaranLainController::class, 'update']);
-Route::delete('/pengeluaran_lain_deleted/{id}',[PengeluaranLainController::class, 'destroy']);
-
-Route::post('/register', [AuthCustomerController::class, 'register']);
