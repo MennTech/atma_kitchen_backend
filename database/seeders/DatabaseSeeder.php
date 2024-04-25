@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             detail_reseps::class,
             pesanans::class,
             detail_pesanans::class,
+            alamats::class,
         ]);
     }
 }
