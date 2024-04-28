@@ -19,6 +19,8 @@ class AuthCustomerController extends Controller
             'password' => 'required',
             'tanggal_lahir' => 'required|date',
             'no_telp' => 'required|between:10,13'
+        ],[
+            'email_customer.unique' => 'Email sudah terdaftar',
         ]);
         
         if($validator->fails()){
@@ -31,6 +33,7 @@ class AuthCustomerController extends Controller
         $storeData['password'] = bcrypt($storeData['password']);
         $customer = Customer::create($storeData);
         return response()->json([
+            'success' => true,
             'message' => 'Register Success',
             'customer' => $customer,
         ]);
