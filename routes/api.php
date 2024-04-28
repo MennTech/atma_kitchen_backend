@@ -9,10 +9,27 @@ use App\Http\Controllers\Api\DetailResepController;
 use App\Http\Controllers\Api\HampersController;
 use App\Http\Controllers\Api\PembelianBahanBakuController;
 use App\Http\Controllers\Api\ProdukController;
+use App\Models\Karyawan;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    $user = $request->user();
+    if($user == null){
+        return response()->json([
+            'data' => null
+        ],404);
+    }
+
+    if($user->id_role == null){
+        return response()->json([
+            'data' => $user
+        ],200);
+    }
+
+    $user = Karyawan::with('role')->find($user->id_karyawan);
+    return response()->json([
+        'data' => $user
+    ],200);
 })->middleware('auth:sanctum');
 /*
 |--------------------------------------------------------------------------|
