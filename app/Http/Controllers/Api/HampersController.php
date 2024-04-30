@@ -26,15 +26,31 @@ class HampersController extends Controller
         ]);
     }
 
-    public function show(Request $request)
+    public function show(int $id_hampers)
+    {
+        $hampers = Hampers::with('produk')->find($id_hampers);
+        if ($hampers == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Hampers Tidak Ditemukan',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Data Hampers Berhasil Ditampilkan',
+            'data' => $hampers
+        ]);
+    }
+
+    public function search(Request $request)
     {
         $key = $request->query('key');
         $hampers = Hampers::with('produk')
-            ->orWhere('nama_hampers', 'like', "%$key%")
-            ->orWhere('harga', 'like', "%$key%")
+            ->orWhere('nama_hampers', 'like', "%{$key}%")
+            ->orWhere('harga', 'like', "%{$key}%")
             ->orWhere(function ($query) use ($key) {
                 $query->whereHas('produk', function ($query) use ($key) {
-                    $query->where('nama_produk', 'like', "%$key%");
+                    $query->where('nama_produk', 'like', "%{$key}%");
                 });
             })
             ->get();
