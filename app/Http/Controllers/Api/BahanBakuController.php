@@ -4,36 +4,35 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Role;
+use App\Models\Bahan_Baku;
 use Illuminate\Support\Facades\Validator;
-
-class RoleController extends Controller
+class BahanBakuController extends Controller
 {
     public function index(){
-        $role = Role::all();
-        if($role->isEmpty()){
+        $bahan_baku = Bahan_Baku::all();
+        if($bahan_baku->isEmpty()){
             return response([
                 'message' => 'data empty',
                 'data' => null
             ],404);
         }
         return response([
-            'message' => 'all role retrived',
-            'data' => $role
+            'message' => 'all Bahan Baku retrived',
+            'data' => $bahan_baku
         ],200);
     }
 
     public function show(string $id){
-        $role = Role::find($id);
-        if(!$role){
+        $bahan_baku = Bahan_Baku::find($id);
+        if(!$bahan_baku){
             return response([
-                'message' => 'role not found',
+                'message' => 'Bahan baku not found',
                 'data' => null
             ],404);
         }
         return response([
-            'message' => 'role found',
-            'data' => $role
+            'message' => 'Bahan Baku found',
+            'data' => $bahan_baku
         ],200);
     }
 
@@ -41,58 +40,62 @@ class RoleController extends Controller
         $storeData = $request->all();
 
         $validator = Validator::make($storeData, [
-            'jabatan' => 'required',
-            'gaji' => 'required'
+            'nama_bahan_baku' => 'required',
+            'stok' => 'required',
+            'satuan' => 'required'
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
-        $role = Role::create($storeData);
+        $bahan_baku = Bahan_Baku::create($storeData);
         return response([
             'message' => 'success insert data',
-            'data' => $role
+            'data' => $bahan_baku
         ],200);
     }
 
     public function update(Request $request, string $id){
-        $role = Role::find($id);
-        if(!$role){
+        $bahan_baku = Bahan_Baku::find($id);
+        if(!$bahan_baku){
             return response([
-                'message' => 'role not found',
+                'message' => 'Bahan Baku not found',
                 'data' => null
             ],404);
         }
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
-            'gaji' => 'required'
+            'nama_bahan_baku' => 'required',
+            'stok' => 'required',
+            'satuan' => 'required'
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
-        $role->gaji = $updateData['gaji'];
-        $role->save();
+        $bahan_baku->nama_bahan_baku = $updateData['nama_bahan_baku'];
+        $bahan_baku->stok = $updateData['stok'];
+        $bahan_baku->satuan = $updateData['satuan'];
+        $bahan_baku->save();
         return response([
-            'message' => 'success update data',
-            'data' => $role
+            'message' => 'Bahan Baku updated',
+            'data' => $bahan_baku
         ],200);
     }
 
-    public function destroy(string $id){
-        $role = Role::find($id);
-        if(!$role){
+    public function destroy($id){
+        $bahan_baku=Bahan_Baku::find($id);
+        if(!$bahan_baku){
             return response([
-                'message' => 'role not found',
+                'message' => 'Bahan Baku not found',
                 'data' => null
             ],404);
         }
-        $role->delete();
+        $bahan_baku->delete();
         return response([
-            'message' => 'success delete role',
-            'data' => $role
+            'message' => 'Bahan Baku deleted'
         ],200);
     }
 }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Detail_Resep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Resep;
-use App\Models\Detail_Resep;
 class ResepController extends Controller
 {
     public function index(){
@@ -14,7 +14,7 @@ class ResepController extends Controller
         if($resep->isEmpty()){
             return response([
                 'message' => 'data empty',
-                'data' => null
+                'data' => null 
             ],404);
         }
         return response([
@@ -23,20 +23,18 @@ class ResepController extends Controller
         ],200);
     }
 
-    public function show(string $id)
+    public function showDetail(string $id)
     {
-        $resep = Resep::find($id);
+        $resep = Resep::with('detail_resep')->find($id);
         if(!$resep){
             return response([
                 'message' => 'resep not found',
                 'data' => null
             ],404);
         }
-        $detail_resep = Detail_Resep::where('id_resep',$id)->get();
         return response([
             'message' => 'resep found',
-            'data' => $resep,
-            'detail_resep' => $detail_resep
+            'data' => $resep
         ],200);
     }
 
@@ -44,14 +42,29 @@ class ResepController extends Controller
         $storeData = $request->all();
 
         $validator = Validator::make($storeData, [
-            'nama_resep' => 'required'
+            'nama_resep' => 'required',
+            'detail_resep' => 'array',
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
-        $resep = Resep::create($storeData);
+
+        //untuk validator tidak bisa memilih bahan baku yang sama dari front end
+
+        $resep = Resep::create([
+            'nama_resep' => $storeData['nama_resep']
+        ]);
+        if($request->has('detail_resep')){
+            foreach($storeData['detail_resep'] as $detail){
+                Detail_Resep::create([
+                    'id_resep' => $resep->id_resep,
+                    'id_bahan_baku' => $detail['id_bahan_baku'],
+                    'jumlah_bahan' => $detail['jumlah_bahan']
+                ]);
+            }
+        }
         return response([
             'message' => 'success insert data',
             'data' => $resep
@@ -69,15 +82,44 @@ class ResepController extends Controller
         $updateData = $request->all();
 
         $validator = Validator::make($updateData, [
-            'nama_resep' => 'required'
+            'nama_resep' => 'required',
+            'detail_resep' => 'array|required'
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
-        $resep->nama_resep = $updateData['nama_resep'];
-        $resep->save();
+        $resep->update([
+            'nama_resep' => $updateData['nama_resep']
+        ]);
+
+        if ($request->has('detail_resep')) {
+            // $detailResep = Detail_Resep::where('id_resep',$id)->get();
+            // // dd($detailResep);
+            // // dd($updateData['detail_resep']);
+            // $counter = count($updateData['detail_resep']);
+            // for ($i=0; $i <= $counter; $i++) { 
+            //     if(isset($detailResep[$i])){
+            //         $detailResep[$i]->update([
+            //             'id_bahan_baku' => $updateData['detail_resep'][$i]['id_bahan_baku'],
+            //             'jumlah_bahan' => $updateData['detail_resep'][$i]['jumlah_bahan']
+            //         ]);
+            //     } else {
+            //         return 'error';
+            //     }
+            // }
+
+            $detailResep = Detail_Resep::where('id_resep',$id)->get();
+            $detailResep->delete();
+            foreach($updateData['detail_resep'] as $detail){
+                Detail_Resep::create([
+                    'id_resep' => $resep->id_resep,
+                    'id_bahan_baku' => $detail['id_bahan_baku'],
+                    'jumlah_bahan' => $detail['jumlah_bahan']
+                ]);
+            }
+        }
         return response([
             'message' => 'resep updated',
             'data' => $resep
@@ -85,7 +127,7 @@ class ResepController extends Controller
 
     }
 
-    public function destroy($id){
+    public function destroyResep($id){
         $resep=Resep::find($id);
         if(!$resep){
             return response([
@@ -94,16 +136,31 @@ class ResepController extends Controller
             ],404);
         }
 
+        $resep->bahanBaku()->detach();
         if($resep->delete()){
             return response([
                 'message' => 'resep deleted',
                 'data' => $resep
             ],200);
         }
+    }
 
+    public function destroyAllDetail($id){
+        Detail_Resep::where('id_resep',$id)->delete();
+        $detailResep = Detail_Resep::where('id_resep',$id)->get();
         return response([
-            'message' => 'delete resep failed',
-            'data' => null,
-        ],400);
+            'message' => 'all detail resep deleted',
+            'data' => $detailResep
+        ],200);
+    }
+
+    public function destroyDetail($id,$id2){
+        Detail_Resep::where('id_resep',$id)->where('id_bahan_baku',$id2)->delete();
+        $detailResep = Detail_Resep::where('id_resep',$id)->get();
+        return response([
+            'message' => 'detail resep deleted',
+            'data' => $detailResep
+        ],200);
+
     }
 }

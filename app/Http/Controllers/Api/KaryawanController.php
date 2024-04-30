@@ -38,20 +38,21 @@ class KaryawanController extends Controller
 
     public function store(Request $request){
         $storeData = $request->all();
-
         $validator = Validator::make($storeData, [
             'id_role' => 'required',
             'nama_karyawan' => 'required',
-            'no_telp' => 'required',
-            'email_karyawan' => 'required',
-            'password' => 'required',
-            'status' => 'required',
-            'bonus' => 'required'
+            'no_telp' => 'required|between:10,13',
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
+        }
+        $storeData['status'] = 'aktif';
+        $storeData['bonus'] = 0;
+        if($request->has('email_karyawan') && $request->has('password')){
+            $storeData['email_karyawan'] = $request->email_karyawan;
+            $storeData['password'] = $request->password;
         }
         $karyawan = Karyawan::create($storeData);
         return response([
@@ -73,9 +74,42 @@ class KaryawanController extends Controller
             'id_role' => 'required',
             'nama_karyawan' => 'required',
             'no_telp' => 'required',
-            'email_karyawan' => 'required',
-            'password' => 'required',
             'status' => 'required',
+        ]);
+        if($validator->fails()){
+            return response([
+                'message' => $validator->errors()
+            ],400);
+        }
+
+        if($request->has('email_karyawan') && $request->has('password')){
+            $updateData['email_karyawan'] = $request->email_karyawan;
+            $updateData['password'] = $request->password;
+            $karyawan->email_karyawan = $updateData['email_karyawan'];
+            $karyawan->password = $updateData['password'];
+        }
+
+        $karyawan->id_role = $updateData['id_role'];
+        $karyawan->nama_karyawan = $updateData['nama_karyawan'];
+        $karyawan->no_telp = $updateData['no_telp'];
+        $karyawan->status = $updateData['status'];
+        $karyawan->save();
+        return response([
+            'message' => 'karyawan updated',
+            'data' => $karyawan
+        ],200);
+    }   
+
+    public function updateBonus(Request $request, string $id){
+        $karyawan = Karyawan::find($id);
+        if(!$karyawan){
+            return response([
+                'message' => 'karyawan not found',
+                'data' => null
+            ],404);
+        }
+        $updateData = $request->all();
+        $validator = Validator::make($updateData, [
             'bonus' => 'required'
         ]);
         if($validator->fails()){
@@ -83,16 +117,10 @@ class KaryawanController extends Controller
                 'message' => $validator->errors()
             ],400);
         }
-        $karyawan->id_role = $updateData['id_role'];
-        $karyawan->nama_karyawan = $updateData['nama_karyawan'];
-        $karyawan->no_telp = $updateData['no_telp'];
-        $karyawan->email_karyawan = $updateData['email_karyawan'];
-        $karyawan->password = $updateData['password'];
-        $karyawan->status = $updateData['status'];
         $karyawan->bonus = $updateData['bonus'];
         $karyawan->save();
         return response([
-            'message' => 'karyawan updated',
+            'message' => 'bonus karyawan updated',
             'data' => $karyawan
         ],200);
     }

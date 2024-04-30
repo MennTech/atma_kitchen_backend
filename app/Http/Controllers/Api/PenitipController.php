@@ -4,36 +4,35 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Role;
+use App\Models\Penitip;
 use Illuminate\Support\Facades\Validator;
-
-class RoleController extends Controller
+class PenitipController extends Controller
 {
     public function index(){
-        $role = Role::all();
-        if($role->isEmpty()){
+        $penitip = Penitip::all();
+        if($penitip->isEmpty()){
             return response([
                 'message' => 'data empty',
                 'data' => null
             ],404);
         }
         return response([
-            'message' => 'all role retrived',
-            'data' => $role
+            'message' => 'all Penitip retrived',
+            'data' => $penitip
         ],200);
     }
 
     public function show(string $id){
-        $role = Role::find($id);
-        if(!$role){
+        $penitip = Penitip::find($id);
+        if(!$penitip){
             return response([
-                'message' => 'role not found',
+                'message' => 'Penitip not found',
                 'data' => null
             ],404);
         }
         return response([
-            'message' => 'role found',
-            'data' => $role
+            'message' => 'Penitip found',
+            'data' => $penitip
         ],200);
     }
 
@@ -41,58 +40,59 @@ class RoleController extends Controller
         $storeData = $request->all();
 
         $validator = Validator::make($storeData, [
-            'jabatan' => 'required',
-            'gaji' => 'required'
+            'nama_penitip' => 'required',
+            'no_telp' => 'required'
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
-        $role = Role::create($storeData);
+        $penitip = Penitip::create($storeData);
         return response([
             'message' => 'success insert data',
-            'data' => $role
+            'data' => $penitip
         ],200);
     }
 
     public function update(Request $request, string $id){
-        $role = Role::find($id);
-        if(!$role){
+        $penitip = Penitip::find($id);
+        if(!$penitip){
             return response([
-                'message' => 'role not found',
+                'message' => 'Penitip not found',
                 'data' => null
             ],404);
         }
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
-            'gaji' => 'required'
+            'nama_penitip' => 'required',
+            'no_telp' => 'required'
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
-        $role->gaji = $updateData['gaji'];
-        $role->save();
+        $penitip->nama_penitip = $updateData['nama_penitip'];
+        $penitip->no_telp = $updateData['no_telp'];
+        $penitip->save();
         return response([
-            'message' => 'success update data',
-            'data' => $role
+            'message' => 'Penitip updated',
+            'data' => $penitip
         ],200);
     }
 
-    public function destroy(string $id){
-        $role = Role::find($id);
-        if(!$role){
+    public function destroy($id){
+        $penitip=Penitip::find($id);
+        if(!$penitip){
             return response([
-                'message' => 'role not found',
+                'message' => 'Penitip not found',
                 'data' => null
             ],404);
         }
-        $role->delete();
+        $penitip->delete();
         return response([
-            'message' => 'success delete role',
-            'data' => $role
+            'message' => 'Penitip deleted'
         ],200);
     }
 }
