@@ -12,7 +12,7 @@ use Ramsey\Uuid\Type\Integer;
 class PembelianBahanBakuController extends Controller
 {
     public function index(Request $request){
-        $pembelian_bahan_bakus = Pembelian_Bahan_Baku::all();
+        $pembelian_bahan_bakus = Pembelian_Bahan_Baku::with('bahanBaku')->get();
         if($pembelian_bahan_bakus == null){
             return response()->json([
                 'success' => false,
@@ -28,7 +28,7 @@ class PembelianBahanBakuController extends Controller
     }
 
     public function show(int $id_pembelian_bahan_baku){
-        $pembelian_bahan_baku = Pembelian_Bahan_Baku::find($id_pembelian_bahan_baku);
+        $pembelian_bahan_baku = Pembelian_Bahan_Baku::with('bahanBaku')->find($id_pembelian_bahan_baku);
         if($pembelian_bahan_baku == null){
             return response()->json([
                 'success' => false,

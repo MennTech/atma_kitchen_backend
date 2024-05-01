@@ -14,7 +14,7 @@ class ProdukController extends Controller
 {
     public function index(Request $request)
     {
-        $produks = Produk::all();
+        $produks = Produk::with('penitip', 'resep')->get();
         if ($produks == null) {
             return response()->json([
                 'success' => false,
@@ -30,7 +30,23 @@ class ProdukController extends Controller
 
     public function index_atma_kitchen(Request $request)
     {
-        $produks = Produk::where('id_penitip', null)->where('status', 'Dijual')->get();
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', null)->where('status', 'Dijual')->get();
+        if ($produks == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk atma kitchen masih kosong'
+            ], 404);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menampilkan data produk atma kitchen',
+            'produks' => $produks
+        ]);
+    }
+
+    public function index_admin_atma_kitchen(Request $request)
+    {
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', null)->get();
         if ($produks == null) {
             return response()->json([
                 'success' => false,
@@ -46,7 +62,23 @@ class ProdukController extends Controller
 
     public function index_penitip(Request $request)
     {
-        $produks = Produk::where('id_penitip', '!=', null)->where('status', 'Dijual')->get();
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', '!=', null)->where('status', 'Dijual')->get();
+        if ($produks == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk penitip masih kosong'
+            ], 404);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menampilkan data produk penitip',
+            'produks' => $produks
+        ]);
+    }
+
+    public function index_admin_penitip(Request $request)
+    {
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', '!=', null)->get();
         if ($produks == null) {
             return response()->json([
                 'success' => false,
