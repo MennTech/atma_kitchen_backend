@@ -15,4 +15,9 @@ class Detail_Resep extends Model
         'id_bahan_baku',
         'jumlah_bahan'
     ];
+
+    public function bahanBaku()
+    {
+        return $this->belongsTo(Bahan_Baku::class, 'id_bahan_baku');
+    }
 }

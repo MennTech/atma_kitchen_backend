@@ -21,7 +21,6 @@ class Karyawan extends Authenticatable
         'no_telp',
         'email_karyawan',
         'password',
-        'status',
         'bonus'
     ];
 
