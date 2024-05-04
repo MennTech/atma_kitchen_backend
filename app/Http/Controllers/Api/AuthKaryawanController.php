@@ -38,15 +38,7 @@ class AuthKaryawanController extends Controller
 
         /** @var \App\Models\Karyawan $karyawan **/
         $karyawan = Auth::guard('api_karyawan')->user();
-
-        if($karyawan->status !== 'Aktif'){
-            return response()->json([
-                'success' => false,
-                'message' => 'Login Gagal',
-                'error' => 'Anda Bukan Karyawan Aktif'
-            ], 401);
-        }
-
+        
         $token = $karyawan->createToken('karyawan-token')->plainTextToken;
         return response()->json([
             'success' => true,

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('presensis', function (Blueprint $table) {
             $table->id('id_presensi')->autoIncrement();
-            $table->foreignId('id_karyawan')->constrained('karyawans', 'id_karyawan');
+            $table->foreignId('id_karyawan')->constrained('karyawans', 'id_karyawan')->onDelete('cascade')->onUpdate('cascade');
             $table->date('tanggal');
             $table->string('status');
         });

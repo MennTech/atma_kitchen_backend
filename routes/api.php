@@ -78,6 +78,8 @@ Route::post('/karyawan',[KaryawanController::class, 'store']);
 Route::put('/karyawan/{id}',[KaryawanController::class, 'update']);
 Route::delete('/karyawan/{id}',[KaryawanController::class, 'destroy']);
 
+Route::get('/role',[RoleController::class, 'index']);
+
 Route::get('/presensi', [PresensiController::class, 'generatePresensi']);
 Route::put('/presensi/{id}',[PresensiController::class, 'updatePresensi']);
 

@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Karyawan;
+use App\Models\Presensi;
 use Illuminate\Support\Facades\Validator;
 class KaryawanController extends Controller
 {
     public function index(){
-        $karyawan = Karyawan::with('role')->get();
+        $karyawan = Karyawan::with('role')->whereHas('role', function ($query){
+            $query->whereNotIn('jabatan', ['Owner']);
+        })->get();
         if($karyawan->isEmpty()){
             return response([
                 'message' => 'data empty',
@@ -41,6 +44,7 @@ class KaryawanController extends Controller
         $validator = Validator::make($storeData, [
             'id_role' => 'required',
             'nama_karyawan' => 'required',
+            'email_karyawan' => 'required',
             'no_telp' => 'required|between:10,13',
         ]);
         if($validator->fails()){
@@ -48,10 +52,8 @@ class KaryawanController extends Controller
                 'message' => $validator->errors()
             ],400);
         }
-        $storeData['status'] = 'aktif';
         $storeData['bonus'] = 0;
-        if($request->has('email_karyawan') && $request->has('password')){
-            $storeData['email_karyawan'] = $request->email_karyawan;
+        if($request->has('password')){
             $storeData['password'] = $request->password;
         }
         $karyawan = Karyawan::create($storeData);
@@ -73,26 +75,22 @@ class KaryawanController extends Controller
         $validator = Validator::make($updateData, [
             'id_role' => 'required',
             'nama_karyawan' => 'required',
+            'email_karyawan' => 'required',
             'no_telp' => 'required',
-            'status' => 'required',
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
-
-        if($request->has('email_karyawan') && $request->has('password')){
-            $updateData['email_karyawan'] = $request->email_karyawan;
+        if($request->has('password')){
             $updateData['password'] = $request->password;
-            $karyawan->email_karyawan = $updateData['email_karyawan'];
             $karyawan->password = $updateData['password'];
         }
-
+        $karyawan->email_karyawan = $updateData['email_karyawan'];
         $karyawan->id_role = $updateData['id_role'];
         $karyawan->nama_karyawan = $updateData['nama_karyawan'];
         $karyawan->no_telp = $updateData['no_telp'];
-        $karyawan->status = $updateData['status'];
         $karyawan->save();
         return response([
             'message' => 'karyawan updated',
@@ -134,6 +132,7 @@ class KaryawanController extends Controller
             ],404);
         }
         $karyawan->delete();
+        Presensi::where('id_karyawan',$id)->delete();
         return response([
             'message' => 'karyawan deleted'
         ],200);

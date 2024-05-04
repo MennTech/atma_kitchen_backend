@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('no_telp', 13);
             $table->string('email_karyawan')->unique()->nullable();
             $table->string('password')->nullable();
-            $table->string('status');
             $table->double('bonus');
         });
     }

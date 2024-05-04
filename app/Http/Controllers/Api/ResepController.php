@@ -83,7 +83,7 @@ class ResepController extends Controller
 
         $validator = Validator::make($updateData, [
             'nama_resep' => 'required',
-            'detail_resep' => 'array|required'
+            'detail_resep' => 'array'
         ]);
         if($validator->fails()){
             return response([
@@ -95,23 +95,7 @@ class ResepController extends Controller
         ]);
 
         if ($request->has('detail_resep')) {
-            // $detailResep = Detail_Resep::where('id_resep',$id)->get();
-            // // dd($detailResep);
-            // // dd($updateData['detail_resep']);
-            // $counter = count($updateData['detail_resep']);
-            // for ($i=0; $i <= $counter; $i++) { 
-            //     if(isset($detailResep[$i])){
-            //         $detailResep[$i]->update([
-            //             'id_bahan_baku' => $updateData['detail_resep'][$i]['id_bahan_baku'],
-            //             'jumlah_bahan' => $updateData['detail_resep'][$i]['jumlah_bahan']
-            //         ]);
-            //     } else {
-            //         return 'error';
-            //     }
-            // }
-
-            $detailResep = Detail_Resep::where('id_resep',$id)->get();
-            $detailResep->delete();
+            Detail_Resep::where('id_resep',$id)->delete();
             foreach($updateData['detail_resep'] as $detail){
                 Detail_Resep::create([
                     'id_resep' => $resep->id_resep,
