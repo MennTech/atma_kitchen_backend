@@ -14,7 +14,7 @@ class ProdukController extends Controller
 {
     public function index(Request $request)
     {
-        $produks = Produk::all();
+        $produks = Produk::with('penitip', 'resep')->get();
         if ($produks == null) {
             return response()->json([
                 'success' => false,
@@ -30,7 +30,23 @@ class ProdukController extends Controller
 
     public function index_atma_kitchen(Request $request)
     {
-        $produks = Produk::where('id_penitip', null)->where('status', 'Dijual')->get();
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', null)->where('status', 'Dijual')->get();
+        if ($produks == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk atma kitchen masih kosong'
+            ], 404);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menampilkan data produk atma kitchen',
+            'produks' => $produks
+        ]);
+    }
+
+    public function index_admin_atma_kitchen(Request $request)
+    {
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', null)->get();
         if ($produks == null) {
             return response()->json([
                 'success' => false,
@@ -46,7 +62,23 @@ class ProdukController extends Controller
 
     public function index_penitip(Request $request)
     {
-        $produks = Produk::where('id_penitip', '!=', null)->where('status', 'Dijual')->get();
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', '!=', null)->where('status', 'Dijual')->get();
+        if ($produks == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk penitip masih kosong'
+            ], 404);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menampilkan data produk penitip',
+            'produks' => $produks
+        ]);
+    }
+
+    public function index_admin_penitip(Request $request)
+    {
+        $produks = Produk::with('penitip', 'resep')->where('id_penitip', '!=', null)->get();
         if ($produks == null) {
             return response()->json([
                 'success' => false,
@@ -276,16 +308,36 @@ class ProdukController extends Controller
         ]);
     }
 
-    public function show(Request $request)
+    public function show(int $id_produk)
+    {
+        $produk = Produk::find($id_produk);
+        if($produk == null){
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk tidak ditemukan'
+            ], 404);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menampilkan data produk',
+            'produk' => $produk
+        ]);
+    }
+
+    public function search(Request $request)
     {
         $keyword = $request->query('keyword');
         $produks = Produk::where(function ($query) use ($keyword) {
-            $query->where('status', 'Dijual')->where('nama_produk', 'like', "%$keyword%")
-                ->orWhere('deskripsi_produk', 'like', "%$keyword%")
-                ->orWhere('kategori', 'like', "%$keyword%")
-                ->orWhere('harga', 'like', "%$keyword%")
-                ->orWhere('stok_tersedia', 'like', "%$keyword%");
+            $query->where('status', 'Dijual')
+            ->where(function ($query) use ($keyword) {
+                $query->where('nama_produk', 'like', "%{$keyword}%")
+                ->orWhere('deskripsi_produk', 'like', "%{$keyword}%")
+                ->orWhere('kategori', 'like', "%{$keyword}%")
+                ->orWhere('harga', 'like', "%{$keyword}%")
+                ->orWhere('stok_tersedia', 'like', "%{$keyword}%");
+            });
         })->get();
+
 
         if ($keyword == null) {
             $produks = Produk::all();
@@ -303,18 +355,18 @@ class ProdukController extends Controller
         ]);
     }
 
-    public function showAdmin(Request $request)
+    public function searchAdmin(Request $request)
     {
         $keyword = $request->query('keyword');
         $produks = Produk::where(function ($query) use ($keyword) {
-            $query->where('nama_produk', 'like', "%$keyword%")
-                ->orWhere('deskripsi_produk', 'like', "%$keyword%")
-                ->orWhere('kategori', 'like', "%$keyword%")
-                ->orWhere('status', 'like', "%$keyword%")
-                ->orWhere('harga', 'like', "%$keyword%")
-                ->orWhere('stok_tersedia', 'like', "%$keyword%")
-                ->orWhere('id_penitip', 'like', "%$keyword%")
-                ->orWhere('id_resep', 'like', "%$keyword%");
+            $query->where('nama_produk', 'like', "%{$keyword}%")
+                ->orWhere('deskripsi_produk', 'like', "%{$keyword}%")
+                ->orWhere('kategori', 'like', "%{$keyword}%")
+                ->orWhere('status', 'like', "%{$keyword}%")
+                ->orWhere('harga', 'like', "%{$keyword}%")
+                ->orWhere('stok_tersedia', 'like', "%{$keyword}%")
+                ->orWhere('id_penitip', 'like', "%{$keyword}%")
+                ->orWhere('id_resep', 'like', "%{$keyword}%");
         })->get();
 
         if ($keyword == null) {

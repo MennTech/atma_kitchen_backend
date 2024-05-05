@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             pembelian_bahan_bakus::class,
             penitips::class,
             produks::class,
+            limit_produks::class,
             hamper::class,
             detail_hamper::class,
             customers::class,

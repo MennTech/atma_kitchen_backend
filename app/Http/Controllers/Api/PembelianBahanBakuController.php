@@ -12,7 +12,7 @@ use Ramsey\Uuid\Type\Integer;
 class PembelianBahanBakuController extends Controller
 {
     public function index(Request $request){
-        $pembelian_bahan_bakus = Pembelian_Bahan_Baku::all();
+        $pembelian_bahan_bakus = Pembelian_Bahan_Baku::with('bahanBaku')->get();
         if($pembelian_bahan_bakus == null){
             return response()->json([
                 'success' => false,
@@ -27,15 +27,31 @@ class PembelianBahanBakuController extends Controller
         ]);
     }
 
-    public function show(Request $request){
+    public function show(int $id_pembelian_bahan_baku){
+        $pembelian_bahan_baku = Pembelian_Bahan_Baku::with('bahanBaku')->find($id_pembelian_bahan_baku);
+        if($pembelian_bahan_baku == null){
+            return response()->json([
+                'success' => false,
+                'message' => 'Pembelian Bahan Baku tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Pembelian Bahan Baku',
+            'data' => $pembelian_bahan_baku
+        ]);
+    }
+
+    public function search(Request $request){
         $key = $request->query('key');
         $pembelian_bahan_bakus = Pembelian_Bahan_Baku::with('bahanBaku')
-            ->orWhere('tanggal', 'like', "%$key%")
-            ->orWhere('jumlah', 'like', "%$key%")
-            ->orWhere('harga', 'like', "%$key%")
+            ->orWhere('tanggal', 'like', "%{$key}%")
+            ->orWhere('jumlah', 'like', "%{$key}%")
+            ->orWhere('harga', 'like', "%{$key}%")
             ->orWhere(function($query) use ($key){
                 $query->whereHas('bahanBaku', function($query) use ($key){
-                    $query->where('nama_bahan_baku', "like", "%$key%");
+                    $query->where('nama_bahan_baku', "like", "%{$key}%");
                 });
             })
             ->get();

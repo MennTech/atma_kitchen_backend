@@ -123,6 +123,40 @@ class bahan_bakus extends Seeder
             'stok' => 1000,
             'satuan' => 'buah',
         ]);
-        
+        Bahan_Baku::create([
+            'nama_bahan_baku' => '20x20 Premium Box',
+            'stok' => 1000,
+            'satuan' => 'buah',
+        ]);
+        Bahan_Baku::create([
+            'nama_bahan_baku' => '20x10 Premium Box',
+            'stok' => 1000,
+            'satuan' => 'buah',
+        ]);    
+        Bahan_Baku::create([
+            'nama_bahan_baku' => 'Premium Snack Box',
+            'stok' => 1000,
+            'satuan' => 'buah',
+        ]);    
+        Bahan_Baku::create([
+            'nama_bahan_baku' => 'Botol 1 Liter',
+            'stok' => 1000,
+            'satuan' => 'buah',
+        ]);        
+        Bahan_Baku::create([
+            'nama_bahan_baku' => '20x20 Normal Box',
+            'stok' => 1000,
+            'satuan' => 'buah',
+        ]);
+        Bahan_Baku::create([
+            'nama_bahan_baku' => '20x10 Normal Box',
+            'stok' => 1000,
+            'satuan' => 'buah',
+        ]);
+        Bahan_Baku::create([
+            'nama_bahan_baku' => 'Normal Snack Box',
+            'stok' => 1000,
+            'satuan' => 'buah',
+        ]);
     }
 }
