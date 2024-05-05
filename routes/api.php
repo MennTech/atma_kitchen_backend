@@ -165,6 +165,6 @@ Route::prefix('/hampers')->group(function () {
     Route::get('/cari', [HampersController::class, 'search']);
     Route::get('/{id}', [HampersController::class, 'show']);
     Route::post('/', [HampersController::class, 'store']);
-    Route::put('/{id}', [HampersController::class, 'update']);
+    Route::post('/{id}', [HampersController::class, 'update']);
     Route::delete('/{id}', [HampersController::class, 'destroy']);
 });

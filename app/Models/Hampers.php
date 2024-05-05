@@ -12,6 +12,8 @@ class Hampers extends Model
     protected $table = 'hampers';
     protected $primaryKey = 'id_hampers';
     protected $fillable = [
+        'gambar_hampers',
+        'deskripsi_hampers',
         'nama_hampers',
         'harga'
     ];

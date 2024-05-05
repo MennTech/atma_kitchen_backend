@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('hampers', function (Blueprint $table) {
             $table->id('id_hampers')->autoIncrement();
+            $table->string('gambar_hampers');
+            $table->string('deskripsi_hampers');
             $table->string('nama_hampers');
             $table->double('harga');
         });
