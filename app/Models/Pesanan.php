@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Pesanan extends Model
 {
     use HasFactory;
@@ -31,5 +32,10 @@ class Pesanan extends Model
     public function pesananCustomer()
     {
         return $this->belongsTo(Customer::class, 'id_customer');
+    }
+
+    public function detailPesanan()
+    {
+        return $this->hasMany(Detail_Pesanan::class, 'id_pesanan');
     }
 }

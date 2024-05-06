@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class RoleController extends Controller
 {
     public function index(){
-        $role = Role::all();
+        $role = Role::where('jabatan', '!=', 'Owner')->get();
         if($role->isEmpty()){
             return response([
                 'message' => 'data empty',
@@ -42,13 +42,13 @@ class RoleController extends Controller
 
         $validator = Validator::make($storeData, [
             'jabatan' => 'required',
-            'gaji' => 'required'
         ]);
         if($validator->fails()){
             return response([
                 'message' => $validator->errors()
             ],400);
         }
+        $storeData['gaji'] = 0;
         $role = Role::create($storeData);
         return response([
             'message' => 'success insert data',
@@ -57,6 +57,31 @@ class RoleController extends Controller
     }
 
     public function update(Request $request, string $id){
+        $role = Role::find($id);
+        if(!$role){
+            return response([
+                'message' => 'role not found',
+                'data' => null
+            ],404);
+        }
+        $updateData = $request->all();
+        $validator = Validator::make($updateData, [
+            'jabatan' => 'required'
+        ]);
+        if($validator->fails()){
+            return response([
+                'message' => $validator->errors()
+            ],400);
+        }
+        $role->jabatan = $updateData['jabatan'];
+        $role->save();
+        return response([
+            'message' => 'success update data',
+            'data' => $role
+        ],200);
+    }
+
+    public function updateGaji(Request $request, string $id){
         $role = Role::find($id);
         if(!$role){
             return response([

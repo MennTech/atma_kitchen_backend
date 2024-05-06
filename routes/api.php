@@ -74,12 +74,18 @@ Route::get('/pengeluaran_lain/{id}',[PengeluaranLainController::class, 'show']);
 Route::post('/input_pengeluaran_lain',[PengeluaranLainController::class, 'store']);
 Route::put('/pengeluaran_lain_update/{id}',[PengeluaranLainController::class, 'update']);
 Route::delete('/pengeluaran_lain_deleted/{id}',[PengeluaranLainController::class, 'destroy']);
+
+Route::get('/role',[RoleController::class, 'index']);
+Route::get('/role/{id}',[RoleController::class, 'show']);
+Route::post('/role',[RoleController::class, 'store']);
+Route::put('/role/{id}',[RoleController::class, 'update']);
+Route::delete('/role/{id}',[RoleController::class, 'destroy']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------------Owner-------------------------------------|
 |--------------------------------------------------------------------------|
 */
-Route::put('/role/{id}', [RoleController::class, 'update']);
+Route::put('/role/{id}/gaji', [RoleController::class, 'updateGaji']);
 Route::put('/karyawan/{id}/bonus',[KaryawanController::class, 'updateBonus']);
 /*
 |--------------------------------------------------------------------------|
