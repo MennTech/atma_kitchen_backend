@@ -41,7 +41,6 @@ class CustomerController extends Controller
         $validate = Validator::make($storeData, [
             'nama_customer' => 'required',
             'no_telp' => 'required|between:10,13',
-            'tanggal_lahir' => 'required|date'
         ]);
         if($validate->fails())
             return response(['message' => $validate->errors()], 400);
@@ -50,12 +49,15 @@ class CustomerController extends Controller
     }
 
     public function orderHistory(){
-        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->get();
+        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
         if($history->isEmpty()){
             return response()->json([
                 'message' => 'History Order Kosong'
-            ]);
+            ], 400);
         }
-        return response()->json($history);
+        return response()->json([
+            'message' => 'History Order',
+            'data' => $history
+        ], 200);
     }
 }
