@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             hamper::class,
             detail_hamper::class,
             customers::class,
+            alamats::class,
             roles::class,
             karyawans::class,
             presensis::class,
@@ -37,7 +38,6 @@ class DatabaseSeeder extends Seeder
             detail_reseps::class,
             pesanans::class,
             detail_pesanans::class,
-            alamats::class,
         ]);
     }
 }

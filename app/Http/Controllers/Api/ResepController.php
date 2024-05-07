@@ -116,35 +116,37 @@ class ResepController extends Controller
         if(!$resep){
             return response([
                 'message' => 'resep not found',
+                'status' => false,
                 'data' => null
             ],404);
         }
 
-        $resep->bahanBaku()->detach();
+        Detail_Resep::where('id_resep',$id)->delete();
         if($resep->delete()){
             return response([
                 'message' => 'resep deleted',
+                'status' => true,
                 'data' => $resep
             ],200);
         }
     }
 
-    public function destroyAllDetail($id){
-        Detail_Resep::where('id_resep',$id)->delete();
-        $detailResep = Detail_Resep::where('id_resep',$id)->get();
-        return response([
-            'message' => 'all detail resep deleted',
-            'data' => $detailResep
-        ],200);
-    }
+    // public function destroyAllDetail($id){
+    //     Detail_Resep::where('id_resep',$id)->delete();
+    //     $detailResep = Detail_Resep::where('id_resep',$id)->get();
+    //     return response([
+    //         'message' => 'all detail resep deleted',
+    //         'data' => $detailResep
+    //     ],200);
+    // }
 
-    public function destroyDetail($id,$id2){
-        Detail_Resep::where('id_resep',$id)->where('id_bahan_baku',$id2)->delete();
-        $detailResep = Detail_Resep::where('id_resep',$id)->get();
-        return response([
-            'message' => 'detail resep deleted',
-            'data' => $detailResep
-        ],200);
+    // public function destroyDetail($id,$id2){
+    //     Detail_Resep::where('id_resep',$id)->where('id_bahan_baku',$id2)->delete();
+    //     $detailResep = Detail_Resep::where('id_resep',$id)->get();
+    //     return response([
+    //         'message' => 'detail resep deleted',
+    //         'data' => $detailResep
+    //     ],200);
 
-    }
+    // }
 }

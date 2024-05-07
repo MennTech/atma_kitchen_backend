@@ -72,6 +72,7 @@ Route::delete('/bahan_baku_deleted/{id}', [BahanBakuController::class, 'destroy'
 |--------------------------Manager Operasional-----------------------------|
 |--------------------------------------------------------------------------|
 */
+
 Route::get('/karyawan', [KaryawanController::class, 'index']);
 Route::get('/karyawan/{id}', [KaryawanController::class, 'show']);
 Route::post('/karyawan', [KaryawanController::class, 'store']);
@@ -81,6 +82,7 @@ Route::delete('/karyawan/{id}', [KaryawanController::class, 'destroy']);
 Route::get('/role',[RoleController::class, 'index']);
 
 Route::get('/presensi', [PresensiController::class, 'generatePresensi']);
+Route::get('/presensi/data', [PresensiController::class, 'show']);
 Route::put('/presensi/{id}', [PresensiController::class, 'updatePresensi']);
 
 Route::get('/penitip', [PenitipController::class, 'index']);
