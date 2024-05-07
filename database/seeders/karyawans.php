@@ -41,18 +41,21 @@ class karyawans extends Seeder
             'id_role' => 4,
             'nama_karyawan' => 'Emily Wilson',
             'no_telp' => '081234567893',
+            'email_karyawan' => 'emily@gmail.com',
             'bonus' => 500000,
         ]);
         Karyawan::create([
             'id_role' => 4,
             'nama_karyawan' => 'John Anderson',
             'no_telp' => '081234567894',
+            'email_karyawan' => 'johnAnder@gmail.com',
             'bonus' => 700000,
         ]);
         Karyawan::create([
             'id_role' => 4,
             'nama_karyawan' => 'Jane Martinez',
             'no_telp' => '081234567895',
+            'email_karyawan' => 'jane@gmail.com',
             'bonus' => 750000,
         ]);
 
