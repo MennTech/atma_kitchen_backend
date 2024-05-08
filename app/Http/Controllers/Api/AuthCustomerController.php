@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\PasswordReset;
 
 class AuthCustomerController extends Controller
 {
@@ -98,5 +100,44 @@ class AuthCustomerController extends Controller
             'success' => true,
             'message' => 'Logout sukses'
         ]);
+    }
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email_customer' => 'required|email']);
+        
+
+        $status = Password::sendResetLink(
+            $request->only('email_customer')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+                    ? response()->json(['message' => 'Reset password link sent on your email id.'], 201)
+                    : response()->json(['message' => 'Unable to send reset password link'], 400);
+    }
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'email_customer' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:8',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email_customer', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => bcrypt($password)
+                ])->save();
+            }
+        );
+
+        return $status == Password::PASSWORD_RESET
+            ? response()->json(['message' => 'Password has been reset successfully.'], 200)
+            : response()->json(['message' => 'Unable to reset password'], 400);
+    }
+    public function tampil(Request $request)
+    {
+        $data=$request->all();
+        return redirect('http://localhost:5173/reset-password?email='.$data['email'].'&token='.$data['token']);
     }
 }

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bahan_Baku;
 use Illuminate\Support\Facades\Validator;
+use Psy\Readline\Hoa\Console;
+
 class BahanBakuController extends Controller
 {
     public function index(){
@@ -41,8 +43,14 @@ class BahanBakuController extends Controller
 
         $validator = Validator::make($storeData, [
             'nama_bahan_baku' => 'required',
-            'stok' => 'required',
+            'stok' => 'required|numeric|min:1',
             'satuan' => 'required'
+        ], [
+            'stok.required' => 'Stok harus diisi.',
+            'stok.numeric' => 'Stok harus berupa angka.',
+            'stok.min' => 'Stok harus lebih besar dari 0.',
+            'nama_bahan_baku.required' => 'Nama bahan baku harus diisi.',
+            'satuan.required' => 'Satuan harus diisi.'
         ]);
         if($validator->fails()){
             return response([
@@ -51,13 +59,13 @@ class BahanBakuController extends Controller
         }
         $bahan_baku = Bahan_Baku::create($storeData);
         return response([
-            'message' => 'success insert data',
+            'message' => 'success Menambahkan Bahan Baku baru',
             'data' => $bahan_baku
         ],200);
     }
 
-    public function update(Request $request, string $id){
-        $bahan_baku = Bahan_Baku::find($id);
+    public function update(Request $request, string $id_bahan_baku){
+        $bahan_baku = Bahan_Baku::find($id_bahan_baku);
         if(!$bahan_baku){
             return response([
                 'message' => 'Bahan Baku not found',
