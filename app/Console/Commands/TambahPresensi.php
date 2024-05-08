@@ -27,13 +27,14 @@ class TambahPresensi extends Command
      */
     public function handle()
     {
-        $presensiHariIni = Presensi::where('tanggal', Carbon::now()->toDateString())->count();
+        $date = Carbon::now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
+        $presensiHariIni = Presensi::where('tanggal', $date)->count();
         if ($presensiHariIni == 0) {
             $karyawan = Karyawan::all();
             foreach ($karyawan as $karyawan) {
                 Presensi::create([
                     'id_karyawan' => $karyawan->id_karyawan,
-                    'tanggal' => Carbon::now()->toDateString(),
+                    'tanggal' => $date,
                     'status' => 'Hadir',
                 ]);
             }
