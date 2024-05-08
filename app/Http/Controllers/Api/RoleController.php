@@ -111,12 +111,14 @@ class RoleController extends Controller
         if(!$role){
             return response([
                 'message' => 'role not found',
+                'status' => false,
                 'data' => null
             ],404);
         }
         $role->delete();
         return response([
             'message' => 'success delete role',
+            'status' => true,
             'data' => $role
         ],200);
     }
