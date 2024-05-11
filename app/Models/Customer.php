@@ -25,29 +25,13 @@ class Customer extends Authenticatable
     protected $primaryKey = 'id_customer';
     protected $fillable = [
         'nama_customer',
-        'email_customer',
+        'email',
         'password',
         'tanggal_lahir',
         'no_telp',
         'poin',
         'saldo',
     ];
-    public function getEmailForPasswordReset(): string
-    {
-        return $this->email_customer;
-    }
-    public function routeNotificationFor($driver, $notification = null)
-    {
-        if(method_exists($this, 'routeNotificationFor'.ucfirst($driver))){
-            return call_user_func([$this, 'routeNotificationFor'.ucfirst($driver)], $notification);
-        }
-        switch ($driver) {
-            case 'database':
-                return $this->notifications();
-            case 'mail':
-                return $this->email_customer;
-        }
-    }
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Auth\Events\PasswordReset;
 
 class AuthCustomerController extends Controller
 {
@@ -17,12 +16,12 @@ class AuthCustomerController extends Controller
         $storeData = $request->all();
         $validator= Validator::make($storeData, [
             'nama_customer' => 'required',
-            'email_customer' => 'required|email|unique:customers,email_customer',
+            'email' => 'required|email|unique:customers,email',
             'password' => 'required',
             'tanggal_lahir' => 'required|date',
             'no_telp' => 'required|between:10,13'
         ],[
-            'email_customer.unique' => 'Email sudah terdaftar',
+            'email.unique' => 'Email sudah terdaftar',
         ]);
         
         if($validator->fails()){
@@ -44,11 +43,11 @@ class AuthCustomerController extends Controller
     public function login (Request $request){
         $requestData = $request->all();
         $validator = Validator::make($requestData, [
-            'email_customer' => 'required|email',
+            'email' => 'required|email',
             'password' => 'required'
         ],[
-            'email_customer.required' => 'Email wajib diisi',
-            'email_customer.email' => 'Email tidak valid',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Email tidak valid',
             'password.required' => 'Password wajib diisi'
         ]);
 
@@ -103,11 +102,11 @@ class AuthCustomerController extends Controller
     }
     public function forgotPassword(Request $request)
     {
-        $request->validate(['email_customer' => 'required|email']);
+        $request->validate(['email' => 'required|email']);
         
 
         $status = Password::sendResetLink(
-            $request->only('email_customer')
+            $request->only('email')
         );
 
         return $status === Password::RESET_LINK_SENT
@@ -117,13 +116,13 @@ class AuthCustomerController extends Controller
     public function reset(Request $request)
     {
         $request->validate([
-            'email_customer' => 'required|email',
+            'email' => 'required|email',
             'token' => 'required',
             'password' => 'required|min:8',
         ]);
 
         $status = Password::reset(
-            $request->only('email_customer', 'password', 'password_confirmation', 'token'),
+            $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
                     'password' => bcrypt($password)
