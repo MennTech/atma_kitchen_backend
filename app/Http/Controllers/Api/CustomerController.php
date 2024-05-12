@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
 use App\Models\Pesanan;
+use App\Models\Detail_Pesanan;
 use Illuminate\Support\Facades\Validator;
 class CustomerController extends Controller
 {
@@ -15,9 +16,12 @@ class CustomerController extends Controller
         if($customer->isEmpty()){
             return response()->json([
                 'message' => 'Data Customer Kosong'
-            ]);
+            ],404);
         }
-        return response()->json($customer);
+        return response([
+            'message' => 'all Customer retrived',
+            'data' => $customer
+        ],200);
     }
 
     public function show(){
@@ -60,5 +64,30 @@ class CustomerController extends Controller
             'message' => 'History Order',
             'data' => $history
         ], 200);
+    }
+    public function detailOrderHistory($id_pesanan)
+    {
+        $history = Detail_Pesanan::with(['produk', 'hampers'])->where('id_pesanan', $id_pesanan)->get();
+        if($history->isEmpty()){
+            return response()->json([
+                'message' => 'Detail Pesanan Kosong'
+            ]);
+        }
+        return response([
+            'message' => 'all Detail Pesanan retrieved',
+            'data' => $history
+        ],200);
+    }
+    public function orderHistorybyUser(string $id_customer){
+        $history = Pesanan::where('id_customer', $id_customer)->get();
+        if($history->isEmpty()){
+            return response()->json([
+                'message' => 'History Order Kosong'
+            ]);
+        }
+        return response([
+            'message' => 'all Pesanan retrived',
+            'data' => $history
+        ],200);
     }
 }

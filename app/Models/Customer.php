@@ -3,14 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+
 class Customer extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens,CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -22,14 +25,13 @@ class Customer extends Authenticatable
     protected $primaryKey = 'id_customer';
     protected $fillable = [
         'nama_customer',
-          'email_customer',
+        'email',
         'password',
         'tanggal_lahir',
         'no_telp',
         'poin',
         'saldo',
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *

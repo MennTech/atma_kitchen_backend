@@ -55,8 +55,8 @@ class PenitipController extends Controller
         ],200);
     }
 
-    public function update(Request $request, string $id){
-        $penitip = Penitip::find($id);
+    public function update(Request $request, string $id_penitip){
+        $penitip = Penitip::find($id_penitip);
         if(!$penitip){
             return response([
                 'message' => 'Penitip not found',

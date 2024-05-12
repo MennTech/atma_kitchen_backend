@@ -67,6 +67,10 @@ Route::get('/bahan_baku/{id}', [BahanBakuController::class, 'show']);
 Route::post('/input_bahan_baku', [BahanBakuController::class, 'store']);
 Route::put('/bahan_baku_update/{id}', [BahanBakuController::class, 'update']);
 Route::delete('/bahan_baku_deleted/{id}', [BahanBakuController::class, 'destroy']);
+
+Route::get('/all_customer', [CustomerController::class, 'index']);
+Route::get('/pesanan/{id}', [CustomerController::class, 'orderHistorybyUser']);
+Route::get('/pesanan/detail/{id}', [CustomerController::class, 'detailOrderHistory']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional-----------------------------|
@@ -114,8 +118,13 @@ Route::put('/karyawan/{id}/bonus',[KaryawanController::class, 'updateBonus']);
 |-------------------------------Customer-----------------------------------|
 |--------------------------------------------------------------------------|
 */
+Route::post('/forgot-password', [AuthCustomerController::class, 'forgotPassword'])->name('password.email');
+Route::get('/tampilan', [AuthCustomerController::class, 'tampil'])->name('password.reset');
+Route::post('/reset-password', [AuthCustomerController::class, 'reset']);
 Route::prefix('/customer')->group(function () {
     Route::post('/login', [AuthCustomerController::class, 'login']);
+    // Route untuk menangani reset password
+    Route::post('/reset-password', [AuthCustomerController::class, 'reset']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthCustomerController::class, 'logout']);
         Route::get('/profile', [CustomerController::class, 'show']);

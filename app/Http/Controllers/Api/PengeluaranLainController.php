@@ -56,8 +56,8 @@ class PengeluaranLainController extends Controller
         ],200);
     }
 
-    public function update(Request $request, string $id){
-        $pengeluaran_lain = Pengeluaran_lain::find($id);
+    public function update(Request $request, string $id_pengeluaran_lain){
+        $pengeluaran_lain = Pengeluaran_lain::find($id_pengeluaran_lain);
         if(!$pengeluaran_lain){
             return response([
                 'message' => 'Pengeluaran Lain not found',

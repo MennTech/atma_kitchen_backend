@@ -16,7 +16,7 @@ class customers extends Seeder
     {
         Customer::create([
             'nama_customer' => 'John Doe',
-            'email_customer' => 'john@gmail.com',
+            'email' => 'john@gmail.com',
             'password' => bcrypt('john123'),
             'tanggal_lahir' => '1990-01-01',
             'no_telp' => '081234567890',
@@ -25,7 +25,7 @@ class customers extends Seeder
         ]);
         Customer::create([
             'nama_customer' => 'Jane Smith',
-            'email_customer' => 'jane.smith@example.com',
+            'email' => 'jane.smith@example.com',
             'password' => bcrypt('jane123'),
             'tanggal_lahir' => '1985-05-15',
             'no_telp' => '081234567891',
@@ -34,7 +34,7 @@ class customers extends Seeder
         ]);
         Customer::create([
             'nama_customer' => 'David Johnson',
-            'email_customer' => 'david.johnson@example.com',
+            'email' => 'david.johnson@example.com',
             'password' => bcrypt('david123'),
             'tanggal_lahir' => '1978-10-20',
             'no_telp' => '081234567892',
@@ -43,7 +43,7 @@ class customers extends Seeder
         ]);
         Customer::create([
             'nama_customer' => 'Emily Brown',
-            'email_customer' => 'emily.brown@example.com',
+            'email' => 'emily.brown@example.com',
             'password' => bcrypt('emily123'),
             'tanggal_lahir' => '1993-03-28',
             'no_telp' => '081234567893',
@@ -52,7 +52,7 @@ class customers extends Seeder
         ]);
         Customer::create([
             'nama_customer' => 'Michael Wilson',
-            'email_customer' => 'michael.wilson@example.com',
+            'email' => 'michael.wilson@example.com',
             'password' => bcrypt('michael123'),
             'tanggal_lahir' => '1980-08-10',
             'no_telp' => '081234567894',
