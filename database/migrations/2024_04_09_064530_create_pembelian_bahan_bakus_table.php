@@ -17,6 +17,8 @@ return new class extends Migration
             $table->date('tanggal');
             $table->integer('jumlah');
             $table->double('harga');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 
