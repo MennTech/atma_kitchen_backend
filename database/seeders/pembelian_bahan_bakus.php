@@ -18,33 +18,43 @@ class pembelian_bahan_bakus extends Seeder
             'tanggal' => '2024-03-31',
             'jumlah' => 1000,
             'harga' => 500000,
+            'created_at' => '2024-03-31 00:00:00',
+            'updated_at' => '2024-03-31 00:00:00',
         ]);
         Pembelian_Bahan_Baku::create([
             'id_bahan_baku' => 2,
             'tanggal' => '2024-04-01',
             'jumlah' => 800,
             'harga' => 400000,
+            'created_at' => '2024-04-01 00:00:00',
+            'updated_at' => '2024-04-01 00:00:00',
         ]);
-        
+
         Pembelian_Bahan_Baku::create([
-        'id_bahan_baku' => 3,
-        'tanggal' => '2024-04-02',
-        'jumlah' => 1200,
-        'harga' => 600000,
+            'id_bahan_baku' => 3,
+            'tanggal' => '2024-04-02',
+            'jumlah' => 1200,
+            'harga' => 600000,
+            'created_at' => '2024-04-02 00:00:00',
+            'updated_at' => '2024-04-02 00:00:00',
         ]);
-        
+
         Pembelian_Bahan_Baku::create([
-        'id_bahan_baku' => 4,
-        'tanggal' => '2024-04-03',
-        'jumlah' => 600,
-        'harga' => 300000,
+            'id_bahan_baku' => 4,
+            'tanggal' => '2024-04-03',
+            'jumlah' => 600,
+            'harga' => 300000,
+            'created_at' => '2024-04-03 00:00:00',
+            'updated_at' => '2024-04-03 00:00:00',
         ]);
-        
+
         Pembelian_Bahan_Baku::create([
-        'id_bahan_baku' => 5,
-        'tanggal' => '2024-04-04',
-        'jumlah' => 1500,
-        'harga' => 750000,
+            'id_bahan_baku' => 5,
+            'tanggal' => '2024-04-04',
+            'jumlah' => 1500,
+            'harga' => 750000,
+            'created_at' => '2024-04-04 00:00:00',
+            'updated_at' => '2024-04-04 00:00:00',
         ]);
     }
 }
