@@ -21,6 +21,7 @@ class Pesanan extends Model
         'delivery',
         'total',
         'ongkos_kirim',
+        'jarak',
         'tip',
         'status',
         'jumlah_pembayaran',
