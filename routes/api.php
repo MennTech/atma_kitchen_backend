@@ -16,6 +16,7 @@ use App\Models\Karyawan;
 use App\Http\Controllers\Api\BahanBakuController;
 use App\Http\Controllers\Api\PengeluaranLainController;
 use App\Http\Controllers\Api\PenitipController;
+use App\Http\Controllers\Api\LimitProdukController;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {
@@ -160,7 +161,19 @@ Route::prefix('/produk')->group(function () {
     // produk 'delete'
     Route::patch('/{id}', [ProdukController::class, 'delete']);
 });
-
+/*
+|--------------------------------------------------------------------------|
+|---------------------------------Hampers----------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::prefix('limit-produk')->group(function (){
+    Route::get('/generate', [LimitProdukController::class, 'generateLimitProdukHariIni']);
+    Route::get('/', [LimitProdukController::class, 'show']);
+    Route::get('/cari/tanggal', [LimitProdukController::class, 'showByDate']);
+    Route::get('/cari/produk', [LimitProdukController::class, 'showByProduk']);
+    Route::get('/cari', [LimitProdukController::class, 'showByProdukAndDate']);
+    Route::patch('/{id}', [LimitProdukController::class, 'update']);
+});
 /*
 |--------------------------------------------------------------------------|
 |------------------------Pembelian Bahan Baku------------------------------|

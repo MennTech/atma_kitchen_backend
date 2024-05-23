@@ -17,7 +17,7 @@ class Limit_Produk extends Model
         'stok'
     ];
 
-    public function limitProduk()
+    public function produk()
     {
         return $this->belongsTo(Produk::class, 'id_produk');
     }
