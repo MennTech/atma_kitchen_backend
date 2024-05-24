@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Bahan_Baku;
 use App\Models\Pembelian_Bahan_Baku;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Type\Integer;
@@ -129,6 +130,16 @@ class PembelianBahanBakuController extends Controller
             ], 404);
         }
 
+        $dateNow = Carbon::now()->setTimezone('Asia/Jakarta');
+        $datePembelianCreated = Carbon::parse($pembelian_bahan_baku->created_at);
+        $diffInHours = $datePembelianCreated->diffInHours($dateNow);
+        if ($diffInHours > 24) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pembelian Bahan Baku tidak bisa diedit karena sudah melewati 24 jam'
+            ], 400);
+        }
+
         $requestData = $request->all();
         $validate = Validator::make($requestData, [
             'id_bahan_baku' => 'required|numeric|exists:bahan_bakus,id_bahan_baku',
@@ -177,6 +188,15 @@ class PembelianBahanBakuController extends Controller
                 'success' => false,
                 'message' => 'Pembelian Bahan Baku tidak ditemukan'
             ], 404);
+        }
+        $dateNow = Carbon::now()->setTimezone('Asia/Jakarta');
+        $datePembelianCreated = Carbon::parse($pembelian_bahan_baku->created_at);
+        $diffInHours = $datePembelianCreated->diffInHours($dateNow);
+        if($diffInHours > 24){
+            return response()->json([
+                'success' => false,
+                'message' => 'Pembelian Bahan Baku tidak bisa dihapus karena sudah melewati 24 jam'
+            ], 400);
         }
         // update stok bahan baku
         // !WARNING: bisa menyebabkan stok bahan baku negatif
