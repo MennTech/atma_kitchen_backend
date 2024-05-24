@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('delivery')->nullable();
             $table->double('total')->nullable();
             $table->double('ongkos_kirim')->nullable();
+            $table->double('jarak')->nullable();
             $table->double('tip')->nullable();
             $table->string('status')->nullable();
             $table->double('jumlah_pembayaran')->nullable();

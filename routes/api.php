@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\BahanBakuController;
 use App\Http\Controllers\Api\PengeluaranLainController;
 use App\Http\Controllers\Api\PenitipController;
 use App\Http\Controllers\Api\LimitProdukController;
+use App\Http\Controllers\Api\PesananController;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {
@@ -72,6 +73,12 @@ Route::delete('/bahan_baku_deleted/{id}', [BahanBakuController::class, 'destroy'
 Route::get('/all_customer', [CustomerController::class, 'index']);
 Route::get('/pesanan/{id}', [CustomerController::class, 'orderHistorybyUser']);
 Route::get('/pesanan/detail/{id}', [CustomerController::class, 'detailOrderHistory']);
+
+Route::get('/pesanan-customer-jarak', [PesananController::class, 'showPesananJarakNull']);
+Route::put('/input-jarak-pesanan/{id}', [PesananController::class, 'updateJarakPesanan']);
+
+Route::get('/pesanan-customer-bayar', [PesananController::class, 'showPesananJumlahBayarNull']);
+Route::put('/input-bayar-pesanan/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional-----------------------------|
