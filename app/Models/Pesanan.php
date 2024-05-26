@@ -17,6 +17,7 @@ class Pesanan extends Model
         'tanggal_pesan',
         'tanggal_ambil',
         'tanggal_lunas',
+        'metode_pesan',
         'alamat',
         'delivery',
         'total',
@@ -38,5 +39,16 @@ class Pesanan extends Model
     public function detailPesanan()
     {
         return $this->hasMany(Detail_Pesanan::class, 'id_pesanan');
+    }
+
+    // blom fix
+    public function produkPesanan()
+    {
+        return $this->belongsToMany(Produk::class, 'detail_pesanans', 'id_pesanan', 'id_produk')->withPivot('id_hampers', 'jumlah', 'subtotal');
+    }
+
+    public function hampersPesanan()
+    {
+        return $this->belongsToMany(Hampers::class, 'detail_pesanans', 'id_pesanan', 'id_hampers')->withPivot('id_produk', 'jumlah', 'subtotal');
     }
 }
