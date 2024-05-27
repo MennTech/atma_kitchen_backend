@@ -73,11 +73,12 @@ Route::get('/all_customer', [CustomerController::class, 'index']);
 Route::get('/pesanan/{id}', [CustomerController::class, 'orderHistorybyUser']);
 Route::get('/pesanan/detail/{id}', [CustomerController::class, 'detailOrderHistory']);
 
-Route::get('/pesanan-customer-jarak', [PesananController::class, 'showPesananJarakNull']);
+Route::get('/pesanan-masuk', [PesananController::class, 'showPesanan']);
+// Route::get('/pesanan-customer-jarak', [PesananController::class, 'showPesananJarakNull']);
 Route::put('/input-jarak-pesanan/{id}', [PesananController::class, 'updateJarakPesanan']);
 
-Route::get('/pesanan-customer-bayar', [PesananController::class, 'showPesananJumlahBayarNull']);
-Route::put('/input-bayar-pesanan/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
+// Route::get('/pesanan-customer-bayar', [PesananController::class, 'showPesananJumlahBayarNull']);
+Route::put('/input-jumlah-bayar/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional-----------------------------|

@@ -30,7 +30,7 @@ class Pesanan extends Model
         'bukti_pembayaran'
     ];
 
-    public function pesananCustomer()
+    public function customer()
     {
         return $this->belongsTo(Customer::class, 'id_customer');
     }

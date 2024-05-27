@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\Validator;
 
 class PesananController extends Controller
 {
-    public function showPesananJarakNull(){
-        $pesanan = Pesanan::where('jarak', null)->get();
+    public function showPesanan(){
+        $pesanan = Pesanan::where('status', 'Menunggu Konfirmasi Pesanan')->orWhere('status', 'Menunggu Konfirmasi Admin')->get()->load('customer');
 
         if($pesanan->isEmpty()){
             return response()->json([
-                'message' => 'Tidak ada pesanan yang perlu input jarak',
-                'status' =>  false,
+                'message' => 'Tidak ada pesanan',
+                'status' => false,
                 'data' => null
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Berhasil menampilkan pesanan yang perlu input jarak',
+            'message' => 'Berhasil menampilkan pesanan',
             'status' => true,
             'data' => $pesanan
         ], 200);
@@ -39,7 +39,7 @@ class PesananController extends Controller
 
         $updateJarak = $request->all();
         $validator = Validator::make($updateJarak, [
-            'jarak' => 'required'
+            'jarak' => 'required|min:1'
         ]);
 
         if($validator->fails()){
@@ -71,24 +71,6 @@ class PesananController extends Controller
         ], 200);
     }
 
-    public function showPesananJumlahBayarNull(){
-        $pesanan = Pesanan::where('jumlah_pembayaran', null)->get();
-
-        if($pesanan->isEmpty()){
-            return response()->json([
-                'message' => 'Tidak ada pesanan yang perlu input jumlah bayar',
-                'status' =>  false,
-                'data' => null
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Berhasil menampilkan pesanan yang perlu input jumlah bayar',
-            'status' => true,
-            'data' => $pesanan
-        ], 200);
-    }
-
     public function updateJumlahBayarPesanan(Request $request, $id){
         $pesanan = Pesanan::find($id);
 
@@ -104,7 +86,7 @@ class PesananController extends Controller
         $validator = Validator::make($updateJumlahBayar, [
             'jumlah_pembayaran' => 'required|gte:'.$pesanan->total
         ], [
-            'jumlah_pembayaran.gte' => 'Jumlah pembayaran harus lebih dari atau sama dengan total pesanan'
+            'jumlah_pembayaran.gte' => 'Jumlah pembayaran harus lebih dari atau sama dengan total harga'
         ]);
 
         if($validator->fails()){
