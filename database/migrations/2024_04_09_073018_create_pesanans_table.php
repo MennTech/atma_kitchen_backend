@@ -17,10 +17,12 @@ return new class extends Migration
             $table->dateTime('tanggal_pesan')->nullable();
             $table->dateTime('tanggal_ambil')->nullable();
             $table->dateTime('tanggal_lunas')->nullable();
+            $table->string('metode_pesan')->nullable();
             $table->string('alamat')->nullable();
             $table->string('delivery')->nullable();
             $table->double('total')->nullable();
             $table->double('ongkos_kirim')->nullable();
+            $table->double('jarak')->nullable();
             $table->double('tip')->nullable();
             $table->string('status')->nullable();
             $table->double('jumlah_pembayaran')->nullable();

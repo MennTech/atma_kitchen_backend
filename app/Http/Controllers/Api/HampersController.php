@@ -120,13 +120,6 @@ class HampersController extends Controller
                 // cek apakah produk sudah ada di hampers lain
                 $produk = Produk::whereIn('id_produk', $id_produks)->get();
                 foreach ($produk as $p) {
-                    if ($p->hampers->isNotEmpty()) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Produk sudah ada di hampers lain',
-                            'data' => $p
-                        ], 400);
-                    }
                     if ($p->status != 'Dijual') {
                         return response()->json([
                             'success' => false,
@@ -252,13 +245,6 @@ class HampersController extends Controller
                 foreach ($produk as $p) {
                     if ($hampers->produk->contains($p)) {
                         continue;
-                    }
-                    if ($p->hampers->isNotEmpty()) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Produk sudah ada di hampers lain',
-                            'data' => $p
-                        ], 400);
                     }
                     if ($p->status != 'Dijual') {
                         return response()->json([
