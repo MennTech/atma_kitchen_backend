@@ -130,6 +130,8 @@ Route::prefix('/customer')->group(function () {
         Route::get('/profile', [CustomerController::class, 'show']);
         Route::put('/profile', [CustomerController::class, 'update']);
         Route::get('/history', [CustomerController::class, 'orderHistory']);
+        Route::get('/mustbepaid', [CustomerController::class, 'showOrderMustbePaid']);
+        Route::post('/bukti-transfer', [CustomerController::class, 'BuktiPembayaran']);
     });
 });
 
