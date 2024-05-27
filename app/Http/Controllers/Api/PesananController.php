@@ -659,20 +659,16 @@ class PesananController extends Controller
                 $poinDidapat += 200;
                 $total -= 1_000_000;
             }else if($total % 500_000 != $total){
-                $poinDidapat += 100;
+                $poinDidapat += 75;
                 $total -= 500_000;
             }else if($total % 100_000 != $total){
-                $poinDidapat += 20;
+                $poinDidapat += 15;
                 $total -= 100_000;
-            }else if($total % 50_000 != $total){
-                $poinDidapat += 10;
-                $total -= 50_000;
             }else if($total % 10_000 != $total){
-                $poinDidapat += 2;
+                $poinDidapat += 1;
                 $total -= 10_000;
             }else{
-                $poinDidapat += 1;
-                $total -= 1_000;
+                break;
             }
         }
         $tanggalLahir = Carbon::parse($customer->tanggal_lahir);
