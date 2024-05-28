@@ -41,6 +41,26 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 /*
 |--------------------------------------------------------------------------|
+|----------------------------Pesanan Customer------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::prefix('/pesanan')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/init', [PesananController::class, 'initPesanan']);
+        Route::post('/PO', [PesananController::class, 'storePO']);
+        Route::post('/', [PesananController::class, 'store']);
+        Route::get('/keranjang', [PesananController::class, 'getKeranjangPesanan']);
+        Route::patch('/keranjang', [PesananController::class, 'addDetailKeranjang']);
+        Route::patch('/keranjang/metode', [PesananController::class, 'editMetodePesanan']);
+        Route::patch('/keranjang/hapus', [PesananController::class, 'deleteAllProdukPesanan']);
+        Route::patch('/keranjang/hapus-produk', [PesananController::class, 'deleteProdukPesanan']);
+        Route::patch('/keranjang/tambah-jumlah', [PesananController::class, 'increaseQuantity']);
+        Route::patch('/keranjang/kurang-jumlah', [PesananController::class, 'decreaseQuantity']);
+        Route::patch('/checkout', [PesananController::class, 'checkout']);
+    });
+});
+/*
+|--------------------------------------------------------------------------|
 |----------------------------Karyawan--------------------------------|
 |--------------------------------------------------------------------------|
 */
@@ -74,11 +94,12 @@ Route::get('/all_customer', [CustomerController::class, 'index']);
 Route::get('/pesanan/{id}', [CustomerController::class, 'orderHistorybyUser']);
 Route::get('/pesanan/detail/{id}', [CustomerController::class, 'detailOrderHistory']);
 
-Route::get('/pesanan-customer-jarak', [PesananController::class, 'showPesananJarakNull']);
+Route::get('/pesanan-masuk', [PesananController::class, 'showPesanan']);
+// Route::get('/pesanan-customer-jarak', [PesananController::class, 'showPesananJarakNull']);
 Route::put('/input-jarak-pesanan/{id}', [PesananController::class, 'updateJarakPesanan']);
 
-Route::get('/pesanan-customer-bayar', [PesananController::class, 'showPesananJumlahBayarNull']);
-Route::put('/input-bayar-pesanan/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
+// Route::get('/pesanan-customer-bayar', [PesananController::class, 'showPesananJumlahBayarNull']);
+Route::put('/input-jumlah-bayar/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional-----------------------------|
@@ -140,6 +161,7 @@ Route::prefix('/customer')->group(function () {
         Route::get('/history', [CustomerController::class, 'orderHistory']);
         Route::get('/mustbepaid', [CustomerController::class, 'showOrderMustbePaid']);
         Route::post('/bukti-transfer', [CustomerController::class, 'BuktiPembayaran']);
+        Route::get('/alamat', [CustomerController::class, 'getAlamatUser']);
     });
 });
 
@@ -172,7 +194,7 @@ Route::prefix('/produk')->group(function () {
 });
 /*
 |--------------------------------------------------------------------------|
-|---------------------------------Hampers----------------------------------|
+|-----------------------------LimitProduk----------------------------------|
 |--------------------------------------------------------------------------|
 */
 Route::prefix('limit-produk')->group(function (){

@@ -37,4 +37,15 @@ class Produk extends Model
     {
         return $this->belongsToMany(Hampers::class, 'detail_hampers', 'id_produk', 'id_hampers')->withPivot('id_bahan_baku');
     }
+
+    // blom fix
+    public function hampersPesanan()
+    {
+        return $this->belongsToMany(Hampers::class, 'detail_pesanans', 'id_produk', 'id_hampers')->withPivot('id_pesanan', 'jumlah', 'subtotal');
+    }
+
+    public function pesanan()
+    {
+        return $this->belongsToMany(Pesanan::class, 'detail_pesanans', 'id_produk', 'id_pesanan')->withPivot('id_hampers' , 'jumlah', 'subtotal');
+    }
 }
