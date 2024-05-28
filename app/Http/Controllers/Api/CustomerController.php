@@ -90,4 +90,19 @@ class CustomerController extends Controller
             'data' => $history
         ],200);
     }
+
+    public function getAlamatUser(){
+        $customer = Auth::user();
+        if($customer == null){
+            return response()->json([
+                'success' => false,
+                'message' => 'Customer Tidak Ditemukan'
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Alamat Customer',
+            'data' => $customer->alamat
+        ]);
+    }
 }

@@ -41,6 +41,26 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 /*
 |--------------------------------------------------------------------------|
+|----------------------------Pesanan Customer------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::prefix('/pesanan')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/init', [PesananController::class, 'initPesanan']);
+        Route::post('/PO', [PesananController::class, 'storePO']);
+        Route::post('/', [PesananController::class, 'store']);
+        Route::get('/keranjang', [PesananController::class, 'getKeranjangPesanan']);
+        Route::patch('/keranjang', [PesananController::class, 'addDetailKeranjang']);
+        Route::patch('/keranjang/metode', [PesananController::class, 'editMetodePesanan']);
+        Route::patch('/keranjang/hapus', [PesananController::class, 'deleteAllProdukPesanan']);
+        Route::patch('/keranjang/hapus-produk', [PesananController::class, 'deleteProdukPesanan']);
+        Route::patch('/keranjang/tambah-jumlah', [PesananController::class, 'increaseQuantity']);
+        Route::patch('/keranjang/kurang-jumlah', [PesananController::class, 'decreaseQuantity']);
+        Route::patch('/checkout', [PesananController::class, 'checkout']);
+    });
+});
+/*
+|--------------------------------------------------------------------------|
 |----------------------------Karyawan--------------------------------|
 |--------------------------------------------------------------------------|
 */
@@ -139,6 +159,7 @@ Route::prefix('/customer')->group(function () {
         Route::get('/profile', [CustomerController::class, 'show']);
         Route::put('/profile', [CustomerController::class, 'update']);
         Route::get('/history', [CustomerController::class, 'orderHistory']);
+        Route::get('/alamat', [CustomerController::class, 'getAlamatUser']);
     });
 });
 
@@ -171,7 +192,7 @@ Route::prefix('/produk')->group(function () {
 });
 /*
 |--------------------------------------------------------------------------|
-|---------------------------------Hampers----------------------------------|
+|-----------------------------LimitProduk----------------------------------|
 |--------------------------------------------------------------------------|
 */
 Route::prefix('limit-produk')->group(function (){
