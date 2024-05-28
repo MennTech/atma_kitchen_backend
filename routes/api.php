@@ -159,6 +159,8 @@ Route::prefix('/customer')->group(function () {
         Route::get('/profile', [CustomerController::class, 'show']);
         Route::put('/profile', [CustomerController::class, 'update']);
         Route::get('/history', [CustomerController::class, 'orderHistory']);
+        Route::get('/mustbepaid', [CustomerController::class, 'showOrderMustbePaid']);
+        Route::post('/bukti-transfer', [CustomerController::class, 'BuktiPembayaran']);
         Route::get('/alamat', [CustomerController::class, 'getAlamatUser']);
     });
 });
@@ -229,3 +231,9 @@ Route::prefix('/hampers')->group(function () {
     Route::post('/{id}', [HampersController::class, 'update']);
     Route::delete('/{id}', [HampersController::class, 'destroy']);
 });
+
+
+Route::post('/reject-pesanan/{id}', [PesananController::class, 'rejectPesanan']);
+Route::post('/accept-pesanan/{id}', [PesananController::class, 'acceptPesanan']);
+Route::get('/bahan-kurang', [BahanBakuController::class, 'bahanbakuKurang']);
+Route::get('/pesanan-bayar-valid', [PesananController::class, 'showPesananValidPayment']);

@@ -105,4 +105,46 @@ class CustomerController extends Controller
             'data' => $customer->alamat
         ]);
     }
+
+    public function showOrderMustbePaid(){
+        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->where('status', 'Menunggu Pembayaran')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
+        if($history->isEmpty()){
+            return response()->json([
+                'message' => 'History Order Kosong'
+            ]);
+        }
+        return response([
+            'message' => 'all Pesanan retrived',
+            'data' => $history
+        ],200);
+    }
+    public function BuktiPembayaran(Request $request){
+        $updateData = $request->all();
+        $pesanan = Pesanan::find($updateData['id_pesanan']);
+        if($pesanan == null){
+            return response()->json([
+                'message' => 'Pesanan Tidak Ditemukan'
+            ]);
+        }
+        if($request->hasFile('bukti_pembayaran')){
+            $uploadFolder = 'bukti_pembayaran';
+            $bukti_pembayaran = $request->file('bukti_pembayaran');
+            $image_uploaded_path = $bukti_pembayaran->store($uploadFolder, 'public');
+            $uploadedImageResponse = basename($image_uploaded_path);
+
+            $updateData['bukti_pembayaran'] = $uploadedImageResponse;
+            $updateData['status'] ='Menunggu Konfirmasi Admin';
+            $pesanan->update($updateData);
+            
+            return response([
+                'message' => 'Content Updated Successfully',
+                'data' => $pesanan,
+            ],200);
+        }else{
+            return response([
+                'message' => 'Bukti Pembayaran Tidak Ditemukan'
+            ],400);
+        }
+
+    }
 }

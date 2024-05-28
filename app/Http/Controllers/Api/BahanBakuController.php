@@ -106,4 +106,17 @@ class BahanBakuController extends Controller
             'message' => 'Bahan Baku deleted'
         ],200);
     }
+    public function bahanbakuKurang(){
+        $bahan_baku = Bahan_Baku::where('stok', '<', 0)->get();
+        if($bahan_baku->isEmpty()){
+            return response([
+                'message' => 'Bahan Baku tidak kurang dari 10',
+                'data' => null
+            ],404);
+        }
+        return response([
+            'message' => 'Bahan Baku kurang dari 10',
+            'data' => $bahan_baku
+        ],200);
+    }
 }
