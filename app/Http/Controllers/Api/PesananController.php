@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Models\Pesanan;
 use App\Models\Produk;
 use Carbon\Carbon;
-use Database\Seeders\pesanans;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Resep;
 use Illuminate\Support\Facades\Validator;
