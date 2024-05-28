@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ProdukController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $produks = Produk::with('penitip', 'resep')->get();
         if ($produks == null) {
@@ -24,7 +24,7 @@ class ProdukController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Berhasil menampilkan semua data produk',
-            'produks' => $produks
+            'data' => $produks
         ]);
     }
 

@@ -110,12 +110,12 @@ class BahanBakuController extends Controller
         $bahan_baku = Bahan_Baku::where('stok', '<', 0)->get();
         if($bahan_baku->isEmpty()){
             return response([
-                'message' => 'Bahan Baku tidak kurang dari 10',
+                'message' => 'Bahan Baku tidak kurang',
                 'data' => null
             ],404);
         }
         return response([
-            'message' => 'Bahan Baku kurang dari 10',
+            'message' => 'Bahan Baku kurang',
             'data' => $bahan_baku
         ],200);
     }

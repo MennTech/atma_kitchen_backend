@@ -1517,6 +1517,10 @@ class PesananController extends Controller
                         }
                     }
                 }
+                $id_customer = $pesanan->id_customer;
+                $customer = Customer::find($id_customer);
+                $customer->poin += $pesanan->poin_didapat;
+                $customer->save();
                 
             }else if ($detail->hampers) {
                 $hampers = $detail->hampers;
@@ -1546,7 +1550,7 @@ class PesananController extends Controller
         ], 200);
     }
     public function showPesananValidPayment(){
-        $pesanan = Pesanan::where('status', 'Pembayaran Valid')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
+        $pesanan = Pesanan::where('status', 'Pembayaran Valid')->get()->load('detailPesanan.produk', 'detailPesanan.hampers', 'customer');
         if($pesanan->isEmpty()){
             return response()->json([
                 'message' => 'Tidak ada Pesanan'

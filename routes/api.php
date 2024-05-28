@@ -173,7 +173,7 @@ Route::post('/register', [AuthCustomerController::class, 'register']);
 |--------------------------------------------------------------------------|
 */
 Route::prefix('/produk')->group(function () {
-    Route::get('/', [ProdukController::class, 'index']);
+    Route::get('/produk', [ProdukController::class, 'index']);
     Route::get('/atma_kitchen', [ProdukController::class, 'index_atma_kitchen']);
     Route::get('/penitip', [ProdukController::class, 'index_penitip']);
     Route::get('/admin/atma_kitchen', [ProdukController::class, 'index_admin_atma_kitchen']);
