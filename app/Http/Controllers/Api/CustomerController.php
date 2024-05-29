@@ -53,7 +53,7 @@ class CustomerController extends Controller
     }
 
     public function orderHistory(){
-        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
+        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->where('status', '!=', 'Keranjang')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
         if($history->isEmpty()){
             return response()->json([
                 'message' => 'History Order Kosong',
