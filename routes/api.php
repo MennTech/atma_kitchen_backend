@@ -95,11 +95,13 @@ Route::get('/pesanan/{id}', [CustomerController::class, 'orderHistorybyUser']);
 Route::get('/pesanan/detail/{id}', [CustomerController::class, 'detailOrderHistory']);
 
 Route::get('/pesanan-masuk', [PesananController::class, 'showPesanan']);
-// Route::get('/pesanan-customer-jarak', [PesananController::class, 'showPesananJarakNull']);
+Route::get('/pesanan-diproses', [PesananController::class, 'showPesananDiproses']);
+Route::get('/pesanan-kirim-pickup', [PesananController::class, 'showPesananDikirimSiapPickup']);
+Route::get('/pesanan-telat-bayar', [PesananController::class, 'showPesananTelatBayar']);
 Route::put('/input-jarak-pesanan/{id}', [PesananController::class, 'updateJarakPesanan']);
-
-// Route::get('/pesanan-customer-bayar', [PesananController::class, 'showPesananJumlahBayarNull']);
 Route::put('/input-jumlah-bayar/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
+Route::put('/update-status-pesanan/{id}', [PesananController::class, 'updateStatusPesanan']);
+Route::post('/batal-pesanan/{id}', [PesananController::class, 'updateStatusBatal']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional-----------------------------|
