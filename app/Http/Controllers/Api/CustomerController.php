@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
 use App\Models\Pesanan;
 use App\Models\Detail_Pesanan;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 class CustomerController extends Controller
 {
@@ -53,7 +54,7 @@ class CustomerController extends Controller
     }
 
     public function orderHistory(){
-        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->where('status', '!=', 'Keranjang')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
+        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->where('status', '!=', 'Keranjang')->orderBy('id_pesanan', 'desc')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
         if($history->isEmpty()){
             return response()->json([
                 'message' => 'History Order Kosong',
@@ -134,8 +135,9 @@ class CustomerController extends Controller
 
             $updateData['bukti_pembayaran'] = $uploadedImageResponse;
             $updateData['status'] ='Menunggu Konfirmasi Admin';
+
+            $updateData['tanggal_lunas'] = Carbon::now()->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
             $pesanan->update($updateData);
-            
             return response([
                 'message' => 'Content Updated Successfully',
                 'data' => $pesanan,
