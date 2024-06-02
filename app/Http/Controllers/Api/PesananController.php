@@ -1295,7 +1295,7 @@ class PesananController extends Controller
     }
 
     public function showPesanan(){
-        $pesanan = Pesanan::where('status', 'Menunggu Konfirmasi Pesanan')->orWhere('status', 'Menunggu Konfirmasi Admin')->get()->load('customer');
+        $pesanan = Pesanan::where('status', 'Menunggu Konfirmasi Pesanan')->orWhere('status', 'Menunggu Konfirmasi Admin')->orderBy('id_pesanan','desc')->get()->load('customer');
 
 
         if ($pesanan->isEmpty()) {
@@ -1506,6 +1506,7 @@ class PesananController extends Controller
         }
         foreach ($pesanan->detailPesanan as $detail) {
             if ($detail->produk) {
+                $jumlah = $detail->jumlah;
                 $produk = $detail->produk;
                 $id_resep = $produk->id_resep;
                 $resep = Resep::find($id_resep);
@@ -1516,7 +1517,7 @@ class PesananController extends Controller
                         $bahanBaku = $detailResep->bahanBaku;
 
                         if ($bahanBaku) {
-                            $bahanBaku->stok -= $detailResep->jumlah_bahan;
+                            $bahanBaku->stok -= $detailResep->jumlah_bahan* $jumlah;
                             $bahanBaku->save();
                         }
                     }
