@@ -642,6 +642,10 @@ class PesananController extends Controller
                 'error' => 'Poin tidak mencukupi'
             ], 400);
         }
+        $updateCustomer = Customer::find($pesanan->id_customer);
+        $updateCustomer->update([
+            'poin' => $poinCustomer - $poinDipakai
+        ]);
         $potonganPoin = $poinDipakai * 100;
         $total -= $potonganPoin;
         if($total < 0){
@@ -1291,7 +1295,7 @@ class PesananController extends Controller
     }
 
     public function showPesanan(){
-        $pesanan = Pesanan::where('status', 'Menunggu Konfirmasi Pesanan')->orWhere('status', 'Menunggu Konfirmasi Admin')->get()->load('customer');
+        $pesanan = Pesanan::where('status', 'Menunggu Konfirmasi Pesanan')->orWhere('status', 'Menunggu Konfirmasi Admin')->orderBy('id_pesanan','desc')->get()->load('customer');
 
 
         if ($pesanan->isEmpty()) {
@@ -1502,6 +1506,7 @@ class PesananController extends Controller
         }
         foreach ($pesanan->detailPesanan as $detail) {
             if ($detail->produk) {
+                $jumlah = $detail->jumlah;
                 $produk = $detail->produk;
                 $id_resep = $produk->id_resep;
                 $resep = Resep::find($id_resep);
@@ -1512,16 +1517,11 @@ class PesananController extends Controller
                         $bahanBaku = $detailResep->bahanBaku;
 
                         if ($bahanBaku) {
-                            $bahanBaku->stok -= $detailResep->jumlah_bahan;
+                            $bahanBaku->stok -= $detailResep->jumlah_bahan* $jumlah;
                             $bahanBaku->save();
                         }
                     }
                 }
-                $id_customer = $pesanan->id_customer;
-                $customer = Customer::find($id_customer);
-                $customer->poin += $pesanan->poin_didapat;
-                $customer->save();
-                
             }else if ($detail->hampers) {
                 $hampers = $detail->hampers;
                 $hampers->load('produk');
@@ -1542,6 +1542,13 @@ class PesananController extends Controller
                 }
             }
         }
+        $id_customer = $pesanan->id_customer;
+        $customer = Customer::find($id_customer);
+        // $customer->poin += $pesanan->poin_didapat;
+        $customer->update([
+            'poin' => $customer->poin + $pesanan->poin_didapat
+        ]);
+        $customer->save();
         $pesanan->status = 'Pesanan Diterima';
         $pesanan->save();
         return response()->json([
