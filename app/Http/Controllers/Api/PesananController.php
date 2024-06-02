@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Resep;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isEmpty;
+
 class PesananController extends Controller
 {
     public function initPesanan()
@@ -1357,7 +1359,7 @@ class PesananController extends Controller
             'data' => $pesanan
         ], 200);
     }
- public function updateJumlahBayarPesanan(Request $request, $id)
+    public function updateJumlahBayarPesanan(Request $request, $id)
     {
         $pesanan = Pesanan::find($id);
 
@@ -1567,5 +1569,172 @@ class PesananController extends Controller
             'message' => 'all Pesanan retrived',
             'data' => $pesanan
         ],200);
+    }
+
+    public function showPesananDiProses(){
+        $pesanan = Pesanan::where('status', 'Diproses')->orWhere('status', 'Siap Di-pickup')->get()->load('customer');
+
+        if($pesanan->isEmpty()){
+            return response()->json([
+                'message' => 'Tidak ada pesanan',
+                'status' => false,
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Berhasil menampilkan pesanan',
+            'status' => true,
+            'data' => $pesanan
+        ],200);
+    }
+
+    public function updateStatusPesanan(Request $request, $id){
+        $pesanan = Pesanan::find($id);
+
+        if($pesanan == null){
+            return response()->json([
+                'message' => 'Pesanan tidak ditemukan',
+                'status' => false,
+                'data' => null
+            ],404);
+        }
+
+        $updateStatus = $request->all();
+        $validator = Validator::make($updateStatus,[
+            'status' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'message' => $validator->errors(),
+                'status' => false,
+                'data' => null
+            ],400);
+        }
+
+        $pesanan->status = $updateStatus['status'];
+        $pesanan->save();
+    }
+
+    public function showPesananDikirimSiapPickup(){
+        $pesanan = Pesanan::where('status', 'sedang dikirim kurir')->where('status','siap di-pickup')->where('status', 'sudah di-pickup')->get();
+
+        if($pesanan->isempty()){
+            return response()->json([
+                'message' => 'Pesanan tidak ada',
+                'status' => false,
+                'data' => null
+            ],404);
+        }
+
+        return response()->json([
+            'message' => 'Pesanan ditemukan',
+            'status' => true,
+            'data' => $pesanan
+        ],200);
+    }
+
+    public function showPesananTelatBayar(){
+        $pesanan = Pesanan::where('status', 'Menunggu Pembayaran')
+        ->whereDate('tanggal_ambil', '<=', Carbon::now()->addDay()->setTimezone('Asia/Jakarta')->format('Y-m-d'))    
+        ->get();
+
+        if($pesanan->isEmpty()){
+            return response()->json([
+                'message' => 'Pesanan tidak ditemukan',
+                'status' => false,
+                'data' => null
+            ],404);
+        }
+
+        return response()->json([
+            'message' => 'Pesanan ditemukan',
+            'status' => true,
+            'data' => $pesanan
+        ],200);
+    }
+
+    public function UpdateStatusBatal($id){
+        $pesanan = Pesanan::find($id);
+
+        if ($pesanan == null) {
+            return response()->json([
+                'message' => 'Pesanan tidak ditemukan',
+                'data' => null
+            ], 404);
+        }
+
+        $pesanan->load('detailPesanan.produk', 'detailPesanan.hampers');
+        if ($pesanan->metode_pesan == 'PO') {
+            $tanggal = $pesanan->tanggal_ambil;
+
+            if ($pesanan->detailPesanan->isEmpty()) {
+                return response()->json([
+                    'message' => 'Detail pesanan tidak ditemukan',
+                    'data' => null
+                ], 404);
+            }
+
+            foreach ($pesanan->detailPesanan as $detail) {
+                if ($detail->produk) {
+                    $id_produk = $detail->produk->id_produk;
+                    $jumlah = $detail->jumlah;
+
+                    $limit_produk = Limit_Produk::where('id_produk', $id_produk)
+                        ->where('tanggal', $tanggal)
+                        ->first();
+
+                    if ($limit_produk) {
+                        $limit_produk->stok += $jumlah;
+                        $limit_produk->save();
+                    }
+                } else if ($detail->hampers) {
+                    $hampers = $detail->hampers;
+                    $hampers->load('produk');
+                    foreach ($hampers->produk as $hampersProduk) {
+                        $id_produk = $hampersProduk->id_produk;
+                        $jumlah = $detail->jumlah;
+                        $limit_produk = Limit_Produk::where('id_produk', $id_produk)
+                            ->where('tanggal', $tanggal)
+                            ->first();
+
+                        if ($limit_produk) {
+                            $limit_produk->stok += $jumlah;
+                            $limit_produk->save();
+                        }
+                    }
+                }
+            }
+            $pesanan->status = 'Batal';
+            $pesanan->save();
+            return response()->json([
+                'message' => 'Pesanan berhasil dibatalkan dan stok diperbarui',
+                'data' => $pesanan
+            ], 200);
+        }
+        if ($pesanan->metode_pesan == 'Pesan Langsung') {
+            if ($pesanan->detailPesanan->isEmpty()) {
+                return response()->json([
+                    'message' => 'Detail pesanan tidak ditemukan',
+                    'data' => null
+                ], 404);
+            }
+            foreach ($pesanan->detailPesanan as $detail) {
+                if ($detail->produk) {
+                    $id_produk = $detail->produk->id_produk;
+                    $jumlah = $detail->jumlah;
+                    $produk = Produk::find($id_produk);
+                    $produk->stok_tersedia += $jumlah;
+                    $produk->save();
+                }
+            }
+            $pesanan->status = 'Batal';
+            $pesanan->save();
+            return response()->json([
+                'message' => 'Pesanan berhasil dibatalkan dan stok diperbarui',
+                'data' => $pesanan
+            ], 200);
+        }
     }
 }
