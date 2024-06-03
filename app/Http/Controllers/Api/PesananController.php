@@ -1750,4 +1750,27 @@ class PesananController extends Controller
             'data' => $penjualan
         ], 200);
     }
+
+    public function showPesananNeedsToBeProcessed(){
+        $date = Carbon::now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
+        $dateNextDay = Carbon::now()->addDay()->setTimezone('Asia/Jakarta')->format('Y-m-d');
+        $pesanan = Pesanan::where('status', 'Pesanan Diterima')
+            ->where('tanggal_ambil', $date)
+            ->orWhere('tanggal_ambil', $dateNextDay)
+            ->get();
+
+        if ($pesanan->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada pesanan yang perlu diproses',
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesanan yang perlu diproses ditemukan',
+            'data' => $pesanan
+        ], 200);
+    }
 }
