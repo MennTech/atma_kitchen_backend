@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PembelianBahanBakuController;
 use App\Http\Controllers\Api\ProdukController;
 use App\Models\Karyawan;
 use App\Http\Controllers\Api\BahanBakuController;
+use App\Http\Controllers\Api\LaporanController;
 use App\Http\Controllers\Api\PengeluaranLainController;
 use App\Http\Controllers\Api\PenitipController;
 use App\Http\Controllers\Api\LimitProdukController;
@@ -137,6 +138,10 @@ Route::get('/role/{id}',[RoleController::class, 'show']);
 Route::post('/role',[RoleController::class, 'store']);
 Route::put('/role/{id}',[RoleController::class, 'update']);
 Route::delete('/role/{id}',[RoleController::class, 'destroy']);
+
+Route::prefix('/laporan')->group(function () {
+    Route::get('/produk-bulanan', [LaporanController::class, 'showPenjualanProdukMonthly']);
+});
 /*
 |--------------------------------------------------------------------------|
 |--------------------------------Owner-------------------------------------|
