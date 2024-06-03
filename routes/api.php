@@ -137,6 +137,8 @@ Route::get('/role/{id}',[RoleController::class, 'show']);
 Route::post('/role',[RoleController::class, 'store']);
 Route::put('/role/{id}',[RoleController::class, 'update']);
 Route::delete('/role/{id}',[RoleController::class, 'destroy']);
+
+Route::get('/laporan-penjualan/{tahun}', [PesananController::class, 'LaporanPenjualanBulanan']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------------Owner-------------------------------------|
