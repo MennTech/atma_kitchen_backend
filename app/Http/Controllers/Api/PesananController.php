@@ -1617,24 +1617,6 @@ class PesananController extends Controller
         $pesanan->save();
     }
 
-    public function showPesananDikirimSiapPickup(){
-        $pesanan = Pesanan::where('status', 'sedang dikirim kurir')->where('status','siap di-pickup')->where('status', 'sudah di-pickup')->get();
-
-        if($pesanan->isempty()){
-            return response()->json([
-                'message' => 'Pesanan tidak ada',
-                'status' => false,
-                'data' => null
-            ],404);
-        }
-
-        return response()->json([
-            'message' => 'Pesanan ditemukan',
-            'status' => true,
-            'data' => $pesanan
-        ],200);
-    }
-
     public function showPesananTelatBayar(){
         $pesanan = Pesanan::where('status', 'Menunggu Pembayaran')
         ->whereDate('tanggal_ambil', '<=', Carbon::now()->addDay()->setTimezone('Asia/Jakarta')->format('Y-m-d'))    
@@ -1736,19 +1718,6 @@ class PesananController extends Controller
                 'data' => $pesanan
             ], 200);
         }
-    }
-
-    public function LaporanPenjualanBulanan($tahun){
-        $penjualan = Pesanan::selectRaw('MONTH(tanggal_pesan) as bulan, COUNT(*) as jumlah_transaksi, SUM(total) as jumlah_uang')
-            ->where('status', 'Selesai')
-            ->whereYear('tanggal_pesan', $tahun)
-            ->groupByRaw('MONTH(tanggal_pesan)')
-            ->get();
-
-        return response()->json([
-            'message' => 'Berhasil menampilkan laporan penjualan bulanan',
-            'data' => $penjualan
-        ], 200);
     }
 
     public function showPesananNeedsToBeProcessed(){
