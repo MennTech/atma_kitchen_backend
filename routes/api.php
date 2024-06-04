@@ -63,6 +63,14 @@ Route::prefix('/pesanan')->group(function () {
 });
 /*
 |--------------------------------------------------------------------------|
+|------------------------------Pesanan MO----------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::get('/pesanan/perlu-diproses', [PesananController::class, 'showPesananPerluDiProses']);
+Route::get('/pesanan/perlu-diproses/penggunaan-bahan', [PesananController::class, 'showPenggunaanBahanPesananDiProses']);
+Route::patch('/pesanan/proses', [PesananController::class, 'prosesPesanan']);
+/*
+|--------------------------------------------------------------------------|
 |----------------------------Karyawan--------------------------------|
 |--------------------------------------------------------------------------|
 */

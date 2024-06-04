@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bahan_Baku;
 use App\Models\Hampers;
 use App\Models\Limit_Produk;
 use App\Models\Customer;
@@ -1720,12 +1721,13 @@ class PesananController extends Controller
         }
     }
 
-    public function showPesananNeedsToBeProcessed(){
+    public function showPesananPerluDiProses(){
         $date = Carbon::now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
         $dateNextDay = Carbon::now()->addDay()->setTimezone('Asia/Jakarta')->format('Y-m-d');
         $pesanan = Pesanan::where('status', 'Pesanan Diterima')
-            ->where('tanggal_ambil', $date)
-            ->orWhere('tanggal_ambil', $dateNextDay)
+            ->where('metode_pesan', 'PO')
+            ->whereDate('tanggal_ambil', $date)
+            ->orWhereDate('tanggal_ambil', $dateNextDay)
             ->get();
 
         if ($pesanan->isEmpty()) {
@@ -1740,6 +1742,256 @@ class PesananController extends Controller
             'success' => true,
             'message' => 'Pesanan yang perlu diproses ditemukan',
             'data' => $pesanan
+        ], 200);
+    }
+
+    public function showPenggunaanBahanPesananDiProses(Request $request){
+        $requestData = $request->all();
+        $validator = Validator::make($requestData, [
+            'id_pesanan' => 'array|required',
+            'id_pesanan.*' => 'required|exists:pesanans,id_pesanan'
+        ],[
+            'id_pesanan.required' => 'Id pesanan harus diisi',
+            'id_pesanan.*.required' => 'Id pesanan harus diisi',
+            'id_pesanan.*.exists' => 'Id pesanan tidak ditemukan'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menampilkan penggunaan bahan baku pesanan',
+                'error' => $validator->errors()
+            ], 400);
+        }
+
+        $idPesanan = $request->query('id_pesanan', []);
+        $bahanBaku = [];
+        foreach ($idPesanan as $p){
+            $pesanan = Pesanan::with('produkPesanan', 'hampersPesanan')->find($p);
+
+            if($pesanan == null){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pesanan tidak ditemukan',
+                    'error' => 'Pesanan dengan id '.$p.' tidak ditemukan'
+                ], 404);
+            }
+
+            foreach ($pesanan->produkPesanan as $produkPesanan){
+                $id_resep = $produkPesanan->id_resep;
+                $resep = Resep::find($id_resep);
+
+                if($resep == null){
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Resep tidak ditemukan',
+                        'error' => 'Resep produk '.$produkPesanan->nama_produk.' tidak ditemukan'
+                    ], 404);
+                }
+
+                $resep->load('detail_resep');
+                foreach ($resep->detail_resep as $detailResep){
+                    $id_bahan_baku = $detailResep->id_bahan_baku;
+                    if(!isset($bahanBaku[$id_bahan_baku])){
+                        $bahanBaku[$id_bahan_baku] = [
+                            'id_bahan_baku' => $detailResep->id_bahan_baku,
+                            'nama_bahan_baku' => $detailResep->bahanBaku->nama_bahan_baku,
+                            'jumlah' => $detailResep->jumlah_bahan * $produkPesanan->pivot->jumlah
+                        ];
+                    } else {
+                        $bahanBaku[$id_bahan_baku]['jumlah'] += $detailResep->jumlah_bahan * $produkPesanan->pivot->jumlah;
+                    }
+                }
+            }
+
+            foreach ($pesanan->hampersPesanan as $hampersPesanan){
+                $hampers = Hampers::with('produk')->find($hampersPesanan->id_hampers);
+                $jumlah = $hampersPesanan->pivot->jumlah;
+
+                if($hampers == null){
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Hampers tidak ditemukan',
+                        'error' => 'Hampers dengan id '.$hampersPesanan->id_hampers.' tidak ditemukan'
+                    ], 404);
+                }
+
+                foreach ($hampers->produk as $produkHampers){
+                    $id_resep = $produkHampers->id_resep;
+                    $resep = Resep::find($id_resep);
+
+                    if($resep == null){
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Resep tidak ditemukan',
+                            'error' => 'Resep produk '.$produkHampers->nama_produk.' tidak ditemukan'
+                        ], 404);
+                    }
+
+                    $resep->load('detail_resep');
+                    foreach ($resep->detail_resep as $detailResep){
+                        $id_bahan_baku = $detailResep->id_bahan_baku;
+                        if(!isset($bahanBaku[$id_bahan_baku])){
+                            $bahanBaku[$id_bahan_baku] = [
+                                'id_bahan_baku' => $detailResep->id_bahan_baku,
+                                'nama_bahan_baku' => $detailResep->bahanBaku->nama_bahan_baku,
+                                'jumlah' => $detailResep->jumlah_bahan * $jumlah
+                            ];
+                        } else {
+                            $bahanBaku[$id_bahan_baku]['jumlah'] += $detailResep->jumlah_bahan * $jumlah;
+                        }
+                    }
+                }
+            }
+        }
+        $bahanBaku = array_values($bahanBaku);
+        $bahanBakuAsli = [];
+        foreach ($bahanBaku as $bahan){
+            $bahanBakuModel = Bahan_Baku::find($bahan['id_bahan_baku']);
+
+            $bahanBakuAsli[] = [
+                'id_bahan_baku' => $bahanBakuModel['id_bahan_baku'],
+                'nama_bahan_baku' => $bahanBakuModel['nama_bahan_baku'],
+                'jumlah' => $bahanBakuModel['stok'],
+                'satuan' => $bahanBakuModel['satuan']
+            ];
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menampilkan penggunaan bahan baku pesanan',
+            'data' => $bahanBaku,
+            'bahan_baku_asli' => $bahanBakuAsli
+        ], 200);
+    }
+
+    public function prosesPesanan (Request $request){
+        $requestData = $request->all();
+        $validator = Validator::make($requestData, [
+            'id_pesanan' => 'array|required',
+            'id_pesanan.*' => 'required|exists:pesanans,id_pesanan'
+        ], [
+            'id_pesanan.required' => 'Id pesanan harus diisi',
+            'id_pesanan.*.required' => 'Id pesanan harus diisi',
+            'id_pesanan.*.exists' => 'Id pesanan tidak ditemukan'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memproses pesanan',
+                'error' => $validator->errors()
+            ], 400);
+        }
+
+        $idPesanan = $requestData['id_pesanan'];
+        foreach ($idPesanan as $id) {
+            $pesanan = Pesanan::with('produkPesanan', 'hampersPesanan')->find($id);
+            if ($pesanan == null) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memproses pesanan',
+                    'error' => 'Pesanan dengan id ' . $id . ' tidak ditemukan'
+                ], 404);
+            }
+
+            // check if all products ingredients are enough
+            foreach ($pesanan->produkPesanan as $produkPesanan) {
+                $id_resep = $produkPesanan->id_resep;
+                $resep = Resep::find($id_resep);
+
+                if ($resep == null) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal memproses pesanan',
+                        'error' => 'Resep produk ' . $produkPesanan->nama_produk . ' tidak ditemukan'
+                    ], 404);
+                }
+
+                $resep->load('detail_resep');
+                foreach ($resep->detail_resep as $detailResep) {
+                    $id_bahan_baku = $detailResep->id_bahan_baku;
+                    $bahanBaku = Bahan_Baku::find($id_bahan_baku);
+
+                    if ($bahanBaku == null) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Gagal memproses pesanan',
+                            'error' => 'Bahan baku ' . $detailResep->nama_bahan_baku . ' tidak ditemukan'
+                        ], 404);
+                    }
+
+                    if ($bahanBaku->stok < $detailResep->jumlah_bahan * $produkPesanan->pivot->jumlah) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Gagal memproses pesanan',
+                            'error' => 'Stok bahan baku ' . $detailResep->nama_bahan_baku . ' tidak mencukupi'
+                        ], 400);
+                    }
+
+                    $bahanBaku->stok -= $detailResep->jumlah_bahan * $produkPesanan->pivot->jumlah;
+                    $bahanBaku->save();
+                }        
+            }
+
+            // check hampers
+            foreach ($pesanan->hampersPesanan as $hampersPesanan) {
+                $hampers = Hampers::with('produk')->find($hampersPesanan->id_hampers);
+                $jumlah = $hampersPesanan->pivot->jumlah;
+
+                if ($hampers == null) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal memproses pesanan',
+                        'error' => 'Hampers dengan id ' . $hampersPesanan->id_hampers . ' tidak ditemukan'
+                    ], 404);
+                }
+
+                foreach ($hampers->produk as $produkHampers) {
+                    $id_resep = $produkHampers->id_resep;
+                    $resep = Resep::find($id_resep);
+
+                    if ($resep == null) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Gagal memproses pesanan',
+                            'error' => 'Resep produk ' . $produkHampers->nama_produk . ' tidak ditemukan'
+                        ], 404);
+                    }
+
+                    $resep->load('detail_resep');
+                    foreach ($resep->detail_resep as $detailResep) {
+                        $id_bahan_baku = $detailResep->id_bahan_baku;
+                        $bahanBaku = Bahan_Baku::find($id_bahan_baku);
+
+                        if ($bahanBaku == null) {
+                            return response()->json([
+                                'success' => false,
+                                'message' => 'Gagal memproses pesanan',
+                                'error' => 'Bahan baku ' . $detailResep->nama_bahan_baku . ' tidak ditemukan'
+                            ], 404);
+                        }
+
+                        if ($bahanBaku->stok < $detailResep->jumlah_bahan * $jumlah) {
+                            return response()->json([
+                                'success' => false,
+                                'message' => 'Gagal memproses pesanan',
+                                'error' => 'Stok bahan baku ' . $detailResep->nama_bahan_baku . ' tidak mencukupi'
+                            ], 400);
+                        }
+
+                        $bahanBaku->stok -= $detailResep->jumlah_bahan * $jumlah;
+                        $bahanBaku->save();
+                    }
+                }
+            }
+            $pesanan->status = 'Diproses';
+            $pesanan->save();
+
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil memproses pesanan',
+            'data' => $idPesanan
         ], 200);
     }
 }
