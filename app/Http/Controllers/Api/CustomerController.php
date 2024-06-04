@@ -149,4 +149,25 @@ class CustomerController extends Controller
         }
 
     }
+
+    public function showPesananDikirimSudahPickup(){
+        $pesanan = Pesanan::where('id_customer', Auth::user()->id_customer)->where(
+            function($query){
+                $query->where('status', 'Sedang Dikirim')->orWhere('status', 'Sudah Di-pickup');
+            })->orderBy('id_pesanan', 'desc')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
+
+        if($pesanan == null){
+            return response()->json([
+                'message' => 'Pesanan tidak ada',
+                'status' => false,
+                'data' => null
+            ],404);
+        }
+
+        return response()->json([
+            'message' => 'Pesanan ditemukan',
+            'status' => true,
+            'data' => $pesanan
+        ],200);
+    }
 }

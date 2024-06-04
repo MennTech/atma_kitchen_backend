@@ -100,4 +100,71 @@ class LaporanController extends Controller
             ]
         ], 200);
     }
+
+    public function LaporanPenjualanBulanan($tahun){
+        $penjualan = Pesanan::selectRaw('MONTH(tanggal_pesan) as bulan, COUNT(*) as jumlah_transaksi, SUM(total) as jumlah_uang')
+            ->where('status', 'Selesai')
+            ->whereYear('tanggal_pesan', $tahun)
+            ->groupByRaw('MONTH(tanggal_pesan)')
+            ->get();
+
+        return response()->json([
+            'message' => 'Berhasil menampilkan laporan penjualan bulanan',
+            'data' => $penjualan
+        ], 200);
+    }
+
+    public function LaporanPenggunaanBahanBaku($startDate, $endDate){
+        $pesanan = Pesanan::whereBetween('tanggal_pesan', [$startDate, $endDate])
+            ->whereIN('status', ['Selesai', 'sedang dikirim', 'diterima', 'siap di-pickup', 'diproses', 'sudah di-pickup'])
+            ->get()->load('detailPesanan.produk.resep.detail_resep.bahanBaku', 'detailPesanan.hampers.produk.produk.resep.detail_resep.bahanBaku');
+
+        $bahanBakuPenggunaan = [];
+
+        foreach ($pesanan as $order) {
+            foreach ($order->detailPesanan as $detail) {
+                if ($detail->produk) {
+                    foreach ($detail->produk->resep->detail_resep as $detailResep) {
+                        $bahanBaku = $detailResep->bahanBaku;
+                        if (!isset($bahanBakuPenggunaan[$bahanBaku->id_bahan_baku])) {
+                            $bahanBakuPenggunaan[$bahanBaku->id_bahan_baku] = [
+                                'nama_bahan_baku' => $bahanBaku->nama_bahan_baku,
+                                'satuan' => $bahanBaku->satuan,
+                                'digunakan' => 0,
+                            ];
+                        }
+                        $bahanBakuPenggunaan[$bahanBaku->id_bahan_baku]['digunakan'] += $detailResep->jumlah_bahan * $detail->jumlah;
+                    }
+                }
+                
+                if ($detail->hampers) {
+                    foreach ($detail->hampers->produk as $productInHampers) {
+                        foreach ($productInHampers->resep->detail_resep as $detailResep) {
+                            $bahanBaku = $detailResep->bahanBaku;
+                            if (!isset($bahanBakuPenggunaan[$bahanBaku->id_bahan_baku])) {
+                                $bahanBakuPenggunaan[$bahanBaku->id_bahan_baku] = [
+                                    'nama_bahan_baku' => $bahanBaku->nama_bahan_baku,
+                                    'satuan' => $bahanBaku->satuan,
+                                    'digunakan' => 0,
+                                ];
+                            }
+                            $bahanBakuPenggunaan[$bahanBaku->id_bahan_baku]['digunakan'] += $detailResep->jumlah_bahan * $detail->jumlah;
+                        }
+                    }
+                }
+            }
+        }
+
+        $newData = [];
+
+        foreach ($bahanBakuPenggunaan as $bahanBaku) {
+            $newData[] = $bahanBaku;
+        }
+
+        return response()->json([
+            'message' => 'Berhasil menampilkan laporan penggunaan bahan baku',
+            'status' => true,
+            'data' => $newData
+        ],200);
+    }
 }

@@ -1617,28 +1617,10 @@ class PesananController extends Controller
         $pesanan->save();
     }
 
-    public function showPesananDikirimSiapPickup(){
-        $pesanan = Pesanan::where('status', 'sedang dikirim kurir')->where('status','siap di-pickup')->where('status', 'sudah di-pickup')->get();
-
-        if($pesanan->isempty()){
-            return response()->json([
-                'message' => 'Pesanan tidak ada',
-                'status' => false,
-                'data' => null
-            ],404);
-        }
-
-        return response()->json([
-            'message' => 'Pesanan ditemukan',
-            'status' => true,
-            'data' => $pesanan
-        ],200);
-    }
-
     public function showPesananTelatBayar(){
         $pesanan = Pesanan::where('status', 'Menunggu Pembayaran')
         ->whereDate('tanggal_ambil', '<=', Carbon::now()->addDay()->setTimezone('Asia/Jakarta')->format('Y-m-d'))    
-        ->get();
+        ->get()->load('customer');
 
         if($pesanan->isEmpty()){
             return response()->json([

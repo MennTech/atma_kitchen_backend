@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\PengeluaranLainController;
 use App\Http\Controllers\Api\PenitipController;
 use App\Http\Controllers\Api\LimitProdukController;
 use App\Http\Controllers\Api\PesananController;
+use App\Models\Customer;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {
@@ -97,7 +98,6 @@ Route::get('/pesanan/detail/{id}', [CustomerController::class, 'detailOrderHisto
 
 Route::get('/pesanan-masuk', [PesananController::class, 'showPesanan']);
 Route::get('/pesanan-diproses', [PesananController::class, 'showPesananDiproses']);
-Route::get('/pesanan-kirim-pickup', [PesananController::class, 'showPesananDikirimSiapPickup']);
 Route::get('/pesanan-telat-bayar', [PesananController::class, 'showPesananTelatBayar']);
 Route::put('/input-jarak-pesanan/{id}', [PesananController::class, 'updateJarakPesanan']);
 Route::put('/input-jumlah-bayar/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
@@ -141,6 +141,8 @@ Route::delete('/role/{id}',[RoleController::class, 'destroy']);
 
 Route::prefix('/laporan')->group(function () {
     Route::get('/produk-bulanan', [LaporanController::class, 'showPenjualanProdukMonthly']);
+    Route::get('/penjualan-bulanan/{tahun}', [LaporanController::class, 'LaporanPenjualanBulanan']);
+    Route::get('/penggunaan-bahan-baku/{startDate}/{endDate}', [LaporanController::class, 'LaporanPenggunaanBahanBaku']);
 });
 /*
 |--------------------------------------------------------------------------|
@@ -162,6 +164,7 @@ Route::prefix('/customer')->group(function () {
     // Route untuk menangani reset password
     Route::post('/reset-password', [AuthCustomerController::class, 'reset']);
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/pesanan-dikirim-pickup', [CustomerController::class, 'showPesananDikirimSudahPickup']);
         Route::post('/logout', [AuthCustomerController::class, 'logout']);
         Route::get('/profile', [CustomerController::class, 'show']);
         Route::put('/profile', [CustomerController::class, 'update']);
