@@ -18,6 +18,10 @@ use App\Http\Controllers\Api\PengeluaranLainController;
 use App\Http\Controllers\Api\PenitipController;
 use App\Http\Controllers\Api\LimitProdukController;
 use App\Http\Controllers\Api\PesananController;
+use App\Http\Controllers\Api\HistorySaldoController;
+use App\Http\Controllers\Api\LaporanPresensiController;
+use App\Http\Controllers\Api\LaporanTransaksiController;
+use App\Http\Controllers\Api\LaporanPenitip;
 use Illuminate\Support\Facades\App;
 
 Route::get('/user', function (Request $request) {
@@ -162,6 +166,8 @@ Route::prefix('/customer')->group(function () {
         Route::get('/mustbepaid', [CustomerController::class, 'showOrderMustbePaid']);
         Route::post('/bukti-transfer', [CustomerController::class, 'BuktiPembayaran']);
         Route::get('/alamat', [CustomerController::class, 'getAlamatUser']);
+        Route::post('/penarikan-saldo', [HistorySaldoController::class, 'PenarikanSaldo']);
+        Route::get('/history-saldo', [HistorySaldoController::class, 'showHistorySaldo']);
     });
 });
 
@@ -237,3 +243,13 @@ Route::post('/reject-pesanan/{id}', [PesananController::class, 'rejectPesanan'])
 Route::post('/accept-pesanan/{id}', [PesananController::class, 'acceptPesanan']);
 Route::get('/bahan-kurang', [BahanBakuController::class, 'bahanbakuKurang']);
 Route::get('/pesanan-bayar-valid', [PesananController::class, 'showPesananValidPayment']);
+
+
+
+Route::get('/history-saldo-pending', [HistorySaldoController::class, 'index']);
+Route::post('/konfirmasi-penarikan-saldo/{id}', [HistorySaldoController::class, 'konfirmasiPenarikanSaldo']);
+Route::post('/tolak-penarikan-saldo/{id}', [HistorySaldoController::class, 'tolakPenarikanSaldo']);
+
+Route::post('/monthly-report', [LaporanPresensiController::class, 'monthlyReport']);
+Route::post('/laporan-transaksi', [LaporanTransaksiController::class, 'monthlyReport']);
+Route::post('/laporan-penitip', [LaporanPenitip::class, 'monthlyReport']);
