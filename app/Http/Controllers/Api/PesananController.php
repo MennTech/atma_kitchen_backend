@@ -1650,7 +1650,7 @@ class PesananController extends Controller
 
         $pesanan->load('detailPesanan.produk', 'detailPesanan.hampers');
         if ($pesanan->metode_pesan == 'PO') {
-            $tanggal = $pesanan->tanggal_ambil;
+            $tanggal = Carbon::parse($pesanan->tanggal_ambil)->format('Y-m-d');
 
             if ($pesanan->detailPesanan->isEmpty()) {
                 return response()->json([
@@ -1665,13 +1665,14 @@ class PesananController extends Controller
                     $jumlah = $detail->jumlah;
 
                     $limit_produk = Limit_Produk::where('id_produk', $id_produk)
-                        ->where('tanggal', $tanggal)
+                        ->whereDate('tanggal', $tanggal)
                         ->first();
 
                     if ($limit_produk) {
                         $limit_produk->stok += $jumlah;
                         $limit_produk->save();
                     }
+
                 } else if ($detail->hampers) {
                     $hampers = $detail->hampers;
                     $hampers->load('produk');
