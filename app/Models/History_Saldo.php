@@ -15,7 +15,8 @@ class History_Saldo extends Model
         'id_customer',
         'tanggal',
         'status',
-        'nominal'
+        'nominal',
+        'nomor_rekening',
     ];
 
     public function historySaldoCustomer()
