@@ -108,7 +108,7 @@ class CustomerController extends Controller
     }
 
     public function showOrderMustbePaid(){
-        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->where('status', 'Menunggu Pembayaran')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
+        $history = Pesanan::where('id_customer', Auth::user()->id_customer)->where('status', 'Menunggu Pembayaran')->orWhere('status', 'Sedang Dikirim')->orWhere('status', 'Sudah Di-pickup')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
         if($history->isEmpty()){
             return response()->json([
                 'message' => 'History Order Kosong'
@@ -148,5 +148,26 @@ class CustomerController extends Controller
             ],400);
         }
 
+    }
+
+    public function showPesananDikirimSudahPickup(){
+        $pesanan = Pesanan::where('id_customer', Auth::user()->id_customer)->where(
+            function($query){
+                $query->where('status', 'Sedang Dikirim')->orWhere('status', 'Sudah Di-pickup');
+            })->orderBy('id_pesanan', 'desc')->get()->load('detailPesanan.produk', 'detailPesanan.hampers');
+
+        if($pesanan == null){
+            return response()->json([
+                'message' => 'Pesanan tidak ada',
+                'status' => false,
+                'data' => null
+            ],404);
+        }
+
+        return response()->json([
+            'message' => 'Pesanan ditemukan',
+            'status' => true,
+            'data' => $pesanan
+        ],200);
     }
 }

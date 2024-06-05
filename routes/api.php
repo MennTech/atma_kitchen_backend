@@ -14,10 +14,12 @@ use App\Http\Controllers\Api\PembelianBahanBakuController;
 use App\Http\Controllers\Api\ProdukController;
 use App\Models\Karyawan;
 use App\Http\Controllers\Api\BahanBakuController;
+use App\Http\Controllers\Api\LaporanController;
 use App\Http\Controllers\Api\PengeluaranLainController;
 use App\Http\Controllers\Api\PenitipController;
 use App\Http\Controllers\Api\LimitProdukController;
 use App\Http\Controllers\Api\PesananController;
+use App\Models\Customer;
 use App\Http\Controllers\Api\HistorySaldoController;
 use App\Http\Controllers\Api\LaporanPresensiController;
 use App\Http\Controllers\Api\LaporanTransaksiController;
@@ -65,6 +67,14 @@ Route::prefix('/pesanan')->group(function () {
 });
 /*
 |--------------------------------------------------------------------------|
+|------------------------------Pesanan MO----------------------------------|
+|--------------------------------------------------------------------------|
+*/
+Route::get('/pesanan/perlu-diproses', [PesananController::class, 'showPesananPerluDiProses']);
+Route::get('/pesanan/perlu-diproses/penggunaan-bahan', [PesananController::class, 'showPenggunaanBahanPesananDiProses']);
+Route::patch('/pesanan/proses', [PesananController::class, 'prosesPesanan']);
+/*
+|--------------------------------------------------------------------------|
 |----------------------------Karyawan--------------------------------|
 |--------------------------------------------------------------------------|
 */
@@ -99,11 +109,12 @@ Route::get('/pesanan/{id}', [CustomerController::class, 'orderHistorybyUser']);
 Route::get('/pesanan/detail/{id}', [CustomerController::class, 'detailOrderHistory']);
 
 Route::get('/pesanan-masuk', [PesananController::class, 'showPesanan']);
-// Route::get('/pesanan-customer-jarak', [PesananController::class, 'showPesananJarakNull']);
+Route::get('/pesanan-diproses', [PesananController::class, 'showPesananDiproses']);
+Route::get('/pesanan-telat-bayar', [PesananController::class, 'showPesananTelatBayar']);
 Route::put('/input-jarak-pesanan/{id}', [PesananController::class, 'updateJarakPesanan']);
-
-// Route::get('/pesanan-customer-bayar', [PesananController::class, 'showPesananJumlahBayarNull']);
 Route::put('/input-jumlah-bayar/{id}', [PesananController::class, 'updateJumlahBayarPesanan']);
+Route::put('/update-status-pesanan/{id}', [PesananController::class, 'updateStatusPesanan']);
+Route::post('/batal-pesanan/{id}', [PesananController::class, 'updateStatusBatal']);
 /*
 |--------------------------------------------------------------------------|
 |--------------------------Manager Operasional-----------------------------|
@@ -139,6 +150,12 @@ Route::get('/role/{id}',[RoleController::class, 'show']);
 Route::post('/role',[RoleController::class, 'store']);
 Route::put('/role/{id}',[RoleController::class, 'update']);
 Route::delete('/role/{id}',[RoleController::class, 'destroy']);
+
+Route::prefix('/laporan')->group(function () {
+    Route::get('/produk-bulanan', [LaporanController::class, 'showPenjualanProdukMonthly']);
+    Route::get('/penjualan-bulanan/{tahun}', [LaporanController::class, 'LaporanPenjualanBulanan']);
+    Route::get('/penggunaan-bahan-baku/{startDate}/{endDate}', [LaporanController::class, 'LaporanPenggunaanBahanBaku']);
+});
 /*
 |--------------------------------------------------------------------------|
 |--------------------------------Owner-------------------------------------|
@@ -159,6 +176,7 @@ Route::prefix('/customer')->group(function () {
     // Route untuk menangani reset password
     Route::post('/reset-password', [AuthCustomerController::class, 'reset']);
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/pesanan-dikirim-pickup', [CustomerController::class, 'showPesananDikirimSudahPickup']);
         Route::post('/logout', [AuthCustomerController::class, 'logout']);
         Route::get('/profile', [CustomerController::class, 'show']);
         Route::put('/profile', [CustomerController::class, 'update']);
