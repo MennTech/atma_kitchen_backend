@@ -20,9 +20,10 @@ class LaporanPresensiController extends Controller
         $presensi = Presensi::whereYear('tanggal', $tahun)
             ->whereMonth('tanggal', $bulan)
             ->get();
-        $karyawans = Karyawan::all();
+        $karyawans = Karyawan::where('id_karyawan','!=','3')->get();
         $laporanPresensi = [];
         foreach ($karyawans as $karyawan) {
+            
             $hadir = $presensi->where('id_karyawan', $karyawan->id_karyawan)
                 ->where('status', 'Hadir')
                 ->count();
