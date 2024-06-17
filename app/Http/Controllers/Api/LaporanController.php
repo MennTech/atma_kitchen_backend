@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
@@ -123,7 +124,7 @@ class LaporanController extends Controller
 
         foreach ($pesanan as $order) {
             foreach ($order->detailPesanan as $detail) {
-                if ($detail->produk) {
+                if ($detail->produk && $detail->produk->kategori != 'Titipan') {
                     foreach ($detail->produk->resep->detail_resep as $detailResep) {
                         $bahanBaku = $detailResep->bahanBaku;
                         if (!isset($bahanBakuPenggunaan[$bahanBaku->id_bahan_baku])) {
